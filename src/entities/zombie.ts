@@ -10,6 +10,7 @@ const TYPE_STATS = {
 
 type ZombieType = "NORMAL" | "FAST" | "SPITTER" | "TANK" | "EXPLODER"
 
+let zombieCounter = 1
 export class Zombie extends Entity {
     zombieType: ZombieType
     damage: number
@@ -18,18 +19,10 @@ export class Zombie extends Entity {
     constructor(x: number, y: number, zombieType: ZombieType) {
         const stats = TYPE_STATS[zombieType]
         super(x, y, stats.hp, stats.symbol)
+        this.id = `Z${zombieCounter++}` // Z1 Z2 Z3 ...
         this.zombieType = zombieType
         this.damage = stats.damage
         this.speed = stats.speed
     }
 }
 
-
-const z = new Zombie(10, 10, "FAST")
-console.log("type:", z.zombieType)
-console.log("hp:", z.hp)
-console.log("damage:", z.damage)
-console.log("speed:", z.speed)
-
-z.takeDamage(30)
-console.log("hp after damage (expect 30):", z.hp)

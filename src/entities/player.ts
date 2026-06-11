@@ -10,7 +10,9 @@ const ROLE_STATS = {
 
 type Role = "MEDIC" | "HEAVY" | "SCOUT" | "DEFENDER"
 
-export class player extends Entity {
+let playerCounter = 1
+export class Player extends Entity {
+
     role: Role;
     isDown: boolean;
     ammo: number;
@@ -18,7 +20,9 @@ export class player extends Entity {
 
     constructor(x: number, y: number, role: Role) {
         const stats = ROLE_STATS[role];
+
         super(x, y, stats.hp, stats.symbol);
+        this.id = `P${playerCounter++}`  // P1 P2 P3 id for players
         this.isDown = false;
         this.ammo = stats.ammo;
         this.armour = 0;
@@ -26,6 +30,7 @@ export class player extends Entity {
     }
 
     // damage will be reduced by armuour points
+
 
     takeDamage(amount: number): void {
         const reduced = amount * (1 - this.armour)

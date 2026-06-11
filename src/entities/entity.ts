@@ -9,7 +9,7 @@ export class Entity {
 
     // id randomnly gen 
     constructor(x: number, y: number, hp: number, symbol: string){
-        this.id = Math.random().toString(36).slice(2)
+        // id is randomnly generated 
         this.xPos = x;
         this.yPos = y;
         this.hp = hp;
@@ -44,7 +44,17 @@ export class Entity {
         alive: this.alive,
         symbol: this.symbol
     }
-}
+    }
+
+    // simple distance method 
+    
+    distanceTo(other: Entity): number {
+    return Math.sqrt(
+        Math.pow(other.xPos - this.xPos, 2) + Math.pow(other.yPos - this.yPos, 2)
+    )
+    }
+
+
 }
 
 
