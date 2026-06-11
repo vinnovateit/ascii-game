@@ -7,9 +7,10 @@ export class Entity {
     alive: boolean;
     symbol: string;
 
-    // id randomnly gen 
+   
     constructor(x: number, y: number, hp: number, symbol: string){
-        // id is randomnly generated 
+
+        this.id = '.' // overide in player and zombie class
         this.xPos = x;
         this.yPos = y;
         this.hp = hp;
