@@ -13,7 +13,7 @@ export class MapGenerator {
         const houseHeight = 8;
 
         for (let y = 0; y < worldHeight; y++) {
-    const row: string[] = []; // Create a temporary local array row
+    const row: string[] = []; 
     
     for (let x = 0; x < worldWidth; x++) {
         let tile = ' '; // Default empty tile space
@@ -26,6 +26,7 @@ export class MapGenerator {
             const dy = y - centerY;
             const distance = Math.sqrt((dx * dx) + (dy * dy * 4.5));
 
+            //center fountain
             if (distance < 15) {
                 tile = ' ';
                 if (distance >= 12.5 && distance < 13.5) tile = '.';
@@ -67,19 +68,30 @@ export class MapGenerator {
                         const isEastDoor = localX === houseEndX && localY === midY;
 
                         if (isNorthDoor || isSouthDoor || isWestDoor || isEastDoor) {
+                            //door
                             tile = '/';
                         } else {
+                            //wall
                             tile = darkShadeBlock;
                         }
                     }
+                    else{
+                        //floor
+                    tile  = ' '; 
+                    }
+
+                }
+                else{
+                    //space around house
+                    tile = ' ';
                 }
             }
         }
         
-        row.push(tile); // Cleanly add the string character onto the row array
+        row.push(tile); 
     }
 
-    worldMap.push(row); // Save the complete row safely into the map grid
+    worldMap.push(row); 
 }
 
 return worldMap;

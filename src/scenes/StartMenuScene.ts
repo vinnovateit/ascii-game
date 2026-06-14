@@ -1,5 +1,11 @@
-import chalk from 'chalk';
-import * as readline from 'readline';
+import figlet from "figlet";
+import chalk from "chalk";
+import * as readline from "readline";
+
+interface MenuLine {
+    text: string;
+    font?: import("figlet").FontName;
+}
 
 export class StartMenuScene {
     private viewHeight: number = 40;
@@ -7,47 +13,78 @@ export class StartMenuScene {
     private rl!: readline.Interface;
 
     public render(): void {
-        const lines: string[] = [
-            "", "", "", "",
-            "=================== TERMINAL ZOMBIE SURVIVAL ===================",
-            "",
-            "---------------------------- [ ☠ ] ----------------------------",
-            "", "",
-            "[1]  JOIN GAME",
-            "",
-            "[2]  CREATE LOBBY",
-            "",
-            "[3]  SELECT ROLE",
-            "",
-            "[4]  SETTINGS",
-            "",
-            "[5]  CREDITS",
-            "",
-            "[6]  HOW TO PLAY",
-            "",
-            "[7]  QUIT",
-            ""
+        const lines: MenuLine[] = [
+            { text: "" },
+            { text: "" },
+            { text: "" },
+            { text: "ZOMBIE GAME", font: "Graffiti" },
+            
+            { text: "" },
+            { text: "----------------------------[ ☠ ]----------------------------" },
+            { text: "" },
+            
+            { text: "[1]  JOIN GAME" },
+            { text: "" },
+            { text: "[2]  CREATE LOBBY" },
+            { text: "" },
+            { text: "[3]  SELECT ROLE" },
+            { text: "" },
+            { text: "[4]  SETTINGS" },
+            { text: "" },
+            { text: "[5]  CREDITS" },
+            { text: "" },
+            { text: "[6]  HOW TO PLAY" },
+            { text: "" },
+            { text: "[7]  QUIT" },
+            { text: "" }
         ];
 
-        let screenBuffer = "";
-
-        for (let j = 0; j < this.viewHeight; j++) {
-            let lineContent = "";
-
-            if (j < lines.length) {
-                let rawLine: string = lines[j] || "";
-                const totallength = this.viewWidth - rawLine.length;
-                const leftlength = Math.max(0, Math.floor(totallength / 2));
-                const rightlength = Math.max(0, totallength - leftlength);
-                lineContent = " ".repeat(leftlength) + rawLine + " ".repeat(rightlength);
-            } else {
-                lineContent = " ".repeat(this.viewWidth);
-            }
-
-            screenBuffer += lineContent + "\n";
-        }
+        const renderedLines = this.renderMenuLines(lines);
+        const screenBuffer = this.centerRenderedLines(renderedLines);
 
         process.stdout.write(chalk.red(screenBuffer));
+    }
+
+    private renderMenuLines(lines: MenuLine[]): string[] {
+        const renderedLines: string[] = [];
+
+        for (const line of lines) {
+            renderedLines.push(...this.renderLine(line));
+        }
+
+        return renderedLines;
+    }
+
+    private renderLine(line: MenuLine): string[] {
+        try {
+            if (line.font) {
+                const figletOptions = {
+                    width: this.viewWidth,
+                    whitespaceBreak: true,
+                    font: line.font,
+                };
+                const figletOutput = figlet.textSync(line.text, figletOptions);
+                return figletOutput.split("\n");
+            } 
+            
+            return [line.text];
+            
+        } catch {
+            return [line.text];
+        }
+    }
+
+    private centerRenderedLines(lines: string[]): string {
+        let screenBuffer = "";
+
+        for (let row = 0; row < this.viewHeight; row++) {
+            const rawText = lines[row] ?? "";
+            const leftPadding = Math.max(0, Math.floor((this.viewWidth - rawText.length) / 2));
+            const rightPadding = Math.max(0, this.viewWidth - rawText.length - leftPadding);
+            screenBuffer += `${" ".repeat(leftPadding)}${rawText}${" ".repeat(rightPadding)}\n`;
+        }
+
+        return screenBuffer;
     }
 
     public askForMenuInput(onSelect: (choice: string) => void): void {
@@ -68,6 +105,8 @@ export class StartMenuScene {
                 this.rl.close();
                 onSelect(trimmed);
             } else {
+                
+                process.stdout.write('\x1b[1A\x1b[2K');
                 this.promptUser(onSelect);
             }
         });

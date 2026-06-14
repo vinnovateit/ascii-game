@@ -1,7 +1,8 @@
 import * as readline from 'readline';
 
+//added l to test healthbar changes
 export class Input {
-    private static keysPressed: { [key: string]: boolean } = { w: false, a: false, s: false, d: false };
+    private static keysPressed: { [key: string]: boolean } = { w: false, a: false, s: false, d: false, l: false };
 
     public static initialize(): void {
         readline.emitKeypressEvents(process.stdin);
@@ -14,6 +15,7 @@ export class Input {
         process.stdin.on('data', this.handleKeyboardInput);
     }
     //basic movement to see if rendering works
+
     private static handleKeyboardInput = (data: Buffer): void => {
         const keyString = data.toString();
         if (keyString === '\u0003') process.exit(); 
@@ -23,6 +25,7 @@ export class Input {
         if (key.includes('s')) this.keysPressed.s = true;
         if (key.includes('a')) this.keysPressed.a = true;
         if (key.includes('d')) this.keysPressed.d = true;
+        if(key.includes('l')) this.keysPressed.l = true;
     };
 
     public static isPressed(key: string): boolean {
@@ -34,5 +37,6 @@ export class Input {
         this.keysPressed.s = false;
         this.keysPressed.a = false;
         this.keysPressed.d = false;
+        this.keysPressed.l =false;
     }
 }
