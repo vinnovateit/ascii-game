@@ -1,4 +1,14 @@
 {
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true
+  }
+}
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
