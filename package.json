@@ -22,6 +22,22 @@
   },
   "devDependencies": {
     "@types/node": "^25.9.1",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "server": "npx ts-node --esm src/lobby/LobbyServer.ts",
+    "client": "npx ts-node --esm src/main.ts",
+    "start": "npx ts-node --esm src/main.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   }
 }
