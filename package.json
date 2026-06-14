@@ -16,8 +16,8 @@
   "type": "module",
   "scripts": {
     "server": "npx ts-node --esm src/lobby/LobbyServer.ts",
-    "client": "node --experimental-strip-types main.ts",
-    "start": "node --experimental-strip-types main.ts",
+    "client": "node --experimental-strip-types src/main.ts",
+    "start": "node --experimental-strip-types src/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
