@@ -27,7 +27,7 @@ export class StartMenuScene {
             { text: "" },
             { text: "[2]  CREATE LOBBY" },
             { text: "" },
-            { text: "[3]  SELECT ROLE" },
+            { text: "[3]  START SINGLEPLAYER" },
             { text: "" },
             { text: "[4]  SETTINGS" },
             { text: "" },

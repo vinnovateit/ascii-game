@@ -1,7 +1,7 @@
 {
   "name": "tbd",
   "version": "1.0.0",
-  "description": "<a id=\"readme-top\"></a>",
+  "description": "ASCII zombie survival game",
   "keywords": [],
   "homepage": "https://github.com/vinnovateit/ascii-game#readme",
   "bugs": {
@@ -14,17 +14,22 @@
   "license": "MIT",
   "author": "",
   "type": "module",
-  "main": "index.js",
   "scripts": {
+    "server": "npx ts-node --esm src/lobby/LobbyServer.ts",
+    "client": "node --experimental-strip-types src/main.ts",
+    "start": "node --experimental-strip-types src/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "chalk": "^4.1.2",
-    "figlet": "^1.11.0"
+    "figlet": "^1.11.0",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@types/figlet": "^1.7.0",
     "@types/node": "^25.9.1",
+    "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   }
 }
