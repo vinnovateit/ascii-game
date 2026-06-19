@@ -3,8 +3,15 @@ import chalk from 'chalk';
 export class PlayerStats {
     public health: number = 100;
     public maxHealth: number = 100;
-    public score: number = 0;
-    public wave: number = 1;
+    private height: number ;
+
+    constructor(height:number)
+    {
+        this.height = height/2;
+
+    }
+
+
 
     //changes health bar colour
     private getHealthColor(text: string): string {
@@ -28,18 +35,26 @@ export class PlayerStats {
         let content = '';
 
         switch (lineIndex) {
-            case 1: content = `  === SURVIVOR ===  `; break;
-            case 3: content = `  HEALTH: ${this.health}/${this.maxHealth} `; break;
-            case 4: content = `  [${this.getHealthBar(12)}] `; break;
-            case 6: content = `  SCORE:  ${this.score} `; break;
-            case 7: content = `  WAVE:   ${this.wave} `; break;
+            
+            case 0: content = `  === SURVIVORS ===  `; break;
+            
+            case 3: content =  chalk.red('   [H]     ') + `[${this.getHealthBar(12)}] `; break;
+            case 5: content =   chalk.green('   [M]     ') + `[${this.getHealthBar(12)}] `; break;
+            case 7: content =   chalk.blue('   [D]     ') + `[${this.getHealthBar(12)}] `; break;
+            case 9: content =   chalk.yellow('   [S]     ') + `[${this.getHealthBar(12)}] `; break;
+            //to seperate the player stat and minimap
+            case this.height-2: return content = `+${'-'.repeat(boxWidth)}+`;break;
+            case this.height-1: return content = `+${'-'.repeat(boxWidth)}+`;break;
             default: content = ''; break;
         }
 
         
-        const rawContentLength = content.replace(/\x1B\[[0-9;]*m/g, '').length; 
-        const paddingNeeded = Math.max(0, boxWidth - rawContentLength - 2);
+                const rawContentLength = content.replace(/\x1B\[[0-9;]*m/g, '').length; 
+                const totalPaddingNeeded = Math.max(0, boxWidth - rawContentLength);
         
-        return chalk.gray('|') + content + ' '.repeat(paddingNeeded) + chalk.gray('|');
+                const paddingLeft = Math.floor(totalPaddingNeeded / 2);
+                const paddingRight = totalPaddingNeeded - paddingLeft;
+                
+                return chalk.gray('|') + ' '.repeat(paddingLeft) + content + ' '.repeat(paddingRight) + chalk.gray('|'); 
     }
 }

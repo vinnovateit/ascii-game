@@ -19,7 +19,7 @@ export class MapGenerator {
         let tile = ' '; // Default empty tile space
 
         //world border
-        if (y === 0 || y === worldHeight - 1 || x === 0 || x === worldWidth - 1) {
+        if (y === 0 ||y === 1 ||y === 2 || y === worldHeight - 2 || x === 0 || x === 1 || x === 2 ||x === 3 || x === worldWidth - 2 || y === worldHeight - 1 || x === worldWidth - 1 || y === worldHeight - 3 || x === worldWidth - 3|| x === worldWidth - 4) {
             tile = fullBlock;
         } else {
             const dx = x - centerX;

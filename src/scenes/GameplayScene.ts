@@ -3,7 +3,10 @@ import { lightShadeBlock } from "../assets/components.ts";
 import { MapGenerator } from "../world/MapGenerator.ts";
 import { Input } from "../core/Input.ts";
 import { PlayerStats } from "./playerStats.ts";
-
+import { Status } from './StatusBar.ts';
+import { Minimap_initiliser } from './Minimap.ts';
+import { dialogue } from './dialogue.ts';
+import { Chat } from './chat.ts';
 
 export class GameplayScene {
     private viewWidth: number;
@@ -17,10 +20,35 @@ export class GameplayScene {
 
     //player stats
     public stats: PlayerStats;
-    private sidebarWidth: number = 24;
+    private sidebarWidth: number = 44;
+    private sidebarHeight : number; 
+
+    //top bar dimensions
+    public statusBar :Status;
+    private statusbarWidth : number ;
+    private statusbarHeight: number = 3;
+
+    //minimap dimensions
+    public Minimap: Minimap_initiliser;
+    private MinimapWidth : number;
+    private MinimapHeight: number;
+
+    //dialogue box dimensions
+    public dialogueBox: dialogue;
+    private dialogueWidth : number;
+    private dialogueHeight: number;
 
 
-    constructor(viewWidth: number = 92, viewHeight: number = 36) {
+
+    //chatbox dimensions
+    public chatBox: Chat;
+    private chatBoxWidth : number;
+    private chatBoxHeight: number;
+
+
+
+
+    constructor(viewWidth: number , viewHeight: number) {
         this.viewWidth = viewWidth;
         this.viewHeight = viewHeight;
         this.playerWorldX = Math.floor(this.worldWidth / 2);
@@ -29,8 +57,29 @@ export class GameplayScene {
         this.worldMap = MapGenerator.generate(this.worldWidth, this.worldHeight);
         this.worldMap[this.playerWorldY]![this.playerWorldX] = ' ';
 
+        //ini stats
+        this.stats = new PlayerStats(viewHeight);
+        this.sidebarHeight = this.viewHeight/2;
+        //ini statusBar
+        this.statusBar = new Status();
+        this.statusbarWidth = this.sidebarWidth*2 + this.viewWidth + 6;
+
+        //ini minimap
+        this.Minimap = new Minimap_initiliser();
+        this.MinimapHeight = this.viewHeight/2;
+        this.MinimapWidth =this.sidebarWidth;
         
-        this.stats = new PlayerStats();
+        //ini dialogue box
+        this.dialogueBox = new dialogue(viewHeight);
+        this.dialogueWidth = this.sidebarWidth;
+        this.dialogueHeight = this.viewHeight/2;
+
+
+        //ini chat box
+        this.chatBox = new Chat();
+        this.chatBoxWidth = this.sidebarWidth;
+        this.chatBoxHeight = this.viewHeight/2;
+
     }
 
     public update(): void {
@@ -57,6 +106,8 @@ export class GameplayScene {
         Input.clearInputFlags();
     }
 
+
+    //renders the entire game
     public render(): void {
         const halfWidth = Math.floor(this.viewWidth / 2);
         const halfHeight = Math.floor(this.viewHeight / 2);
@@ -66,20 +117,46 @@ export class GameplayScene {
         let frameOutput = '';
         frameOutput += '\x1B[H'; 
 
+        const statusbarTopBorder = `+${'-'.repeat(this.statusbarWidth)}+`;
+        frameOutput += chalk.blue(statusbarTopBorder) + "\n";
+        for (let screenY = 0; screenY < this.statusbarHeight; screenY++){
+            let statusBarRow = '';
+            
+            statusBarRow = this.statusBar.getStatusBar(screenY,this.statusbarWidth);
+            
+            frameOutput += statusBarRow + "\n";
+        }
+        const statusBarBottom = `+${'-'.repeat(this.statusbarWidth)}+`;
+        frameOutput += chalk.blue(statusBarBottom) + "\n";
+        
+        
+
+
+
+
         const mapTopBorder = `+${'-'.repeat(this.viewWidth)}+`;
-        const sidebarTopBorder = `+${'-'.repeat(this.sidebarWidth - 2)}+`;
-        frameOutput += sidebarTopBorder + " " + mapTopBorder  +  "\n";
+        const sidebarTopBorder = `+${'-'.repeat(this.sidebarWidth )}+`;
+        const dialogueBarTopBorder = `+${'-'.repeat(this.dialogueWidth )}+`;
+        frameOutput += sidebarTopBorder + " " + mapTopBorder +" "+ dialogueBarTopBorder +  "\n";
 
         for (let screenY = 0; screenY < this.viewHeight; screenY++) {
             let rowString = '|';
 
             let statBarRow = '';
-            if (screenY === 0) {
-                statBarRow = chalk.gray('|') + chalk.red('   [ YOUR PLAYER]     ') + chalk.gray('|');
-            
-                
-            } else {
-                statBarRow = this.stats.getStatbarLine(screenY, this.sidebarWidth);
+            //statbar loading
+            if(screenY < this.sidebarHeight){
+            statBarRow = this.stats.getStatbarLine(screenY, this.sidebarWidth);
+            }
+            //minimap
+            else{
+                statBarRow = this.Minimap.getMinimap(
+                    screenY - this.sidebarHeight, 
+                    this.MinimapWidth, 
+                    this.MinimapHeight, 
+                    this.worldMap, 
+                    this.playerWorldX, 
+                    this.playerWorldY
+                );
             }
 
             for (let screenX = 0; screenX < this.viewWidth; screenX++) {
@@ -105,17 +182,26 @@ export class GameplayScene {
             }
             rowString += '|';
 
+            let chatboxRow = '';
+            //Dialogue box and chat box loading bottom of dialouge box and top of chat box is in getdialougeBox
+            if(screenY <this.dialogueHeight)
+                chatboxRow = this.dialogueBox.getdialogueBox(screenY, this.dialogueWidth);
+            else{
+                chatboxRow = this.chatBox.getchatbox(screenY-this.dialogueHeight,this.chatBoxWidth);
+
+            }
            
             
 
             
-            frameOutput += statBarRow + " " + rowString +  "\n";
+            frameOutput += statBarRow + " " + rowString+" " + chatboxRow+ "\n";
         }
 
         //bottom of main map
         const mapBottomBorder = `+${'-'.repeat(this.viewWidth)}+`;
-        const statbottomborder = `+${'-'.repeat(this.sidebarWidth - 2)}+`;
-        frameOutput += statbottomborder+ " "+ mapBottomBorder +  "\n";
+        const Minimapbottomborder = `+${'-'.repeat(this.MinimapWidth )}+`;
+        const chatBoxbottomborder = `+${'-'.repeat(this.chatBoxWidth )}+`;
+        frameOutput += Minimapbottomborder+ " "+ mapBottomBorder + " "+ chatBoxbottomborder+ "\n";
 
         process.stdout.write(frameOutput);
     }
