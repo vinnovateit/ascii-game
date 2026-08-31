@@ -3,7 +3,11 @@ name = "ascii_game"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+crate-type = ["lib", "cdylib"]
+
 [[bin]]
 name = "hot"
 
 [dependencies]
+libloading = "0.8"
