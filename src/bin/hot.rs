@@ -1,12 +1,32 @@
 // code for hot reloading bin.
-use ascii_game::state::*;
 use ascii_game::init::*;
-use ascii_game::game_loop::*;
+use ascii_game::state::*;
 
 fn main() {
     let mut state = init_state();
     println!("Hot reloading is a work in progress!");
-    loop {
-        fmain(&mut state)
+    unsafe {
+        let mut lib: libloading::Library;
+        let mut fun: libloading::Symbol<unsafe fn(*mut State) -> State>;
+        (lib, fun) = load();
+        reload(&mut lib, &mut fun);
+        loop {
+            fun(&mut state);
+        }
     }
+}
+
+unsafe fn load<'a>() -> (libloading::Library, libloading::Symbol<'a, unsafe fn(*mut State) -> State>) {
+    todo!();
+}
+
+unsafe fn reload<'a>(lib: &mut libloading::Library, fun: &mut libloading::Symbol<unsafe fn(*mut State) -> State>) -> () {
+    *lib = match libloading::Library::new("target/debug/libascii_game.so"){
+        Ok(i) => i,
+        Err(_) => panic!("Could not load library.")
+    };
+    *fun = match lib.get(b"fmain"){
+        Ok(i) => i,
+        Err(_) => panic!("Could not load `fmain` fn.")
+    };
 }
