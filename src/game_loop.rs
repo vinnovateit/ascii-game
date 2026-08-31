@@ -2,6 +2,7 @@ use std::{thread, time};
 
 use crate::state::*;
 
+#[unsafe(no_mangle)]
 pub fn fmain(state: &mut State) {
     println!("This is the main game loop: {}", state.counter);
     state.counter += 1;

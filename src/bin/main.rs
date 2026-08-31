@@ -1,6 +1,5 @@
 // code for static binary
 
-use ascii_game::state::*;
 use ascii_game::init::*;
 use ascii_game::game_loop::*;
 

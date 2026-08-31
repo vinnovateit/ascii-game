@@ -9,8 +9,8 @@ fn main() {
         let mut lib: libloading::Library;
         let mut fun: libloading::Symbol<unsafe fn(*mut State) -> State>;
         (lib, fun) = load();
-        reload(&mut lib, &mut fun);
         loop {
+            fun = reload(&mut lib);
             fun(&mut state);
         }
     }
@@ -20,13 +20,13 @@ unsafe fn load<'a>() -> (libloading::Library, libloading::Symbol<'a, unsafe fn(*
     todo!();
 }
 
-unsafe fn reload<'a>(lib: &mut libloading::Library, fun: &mut libloading::Symbol<unsafe fn(*mut State) -> State>) -> () {
+unsafe fn reload(lib: &mut libloading::Library) -> libloading::Symbol<unsafe fn(*mut State) -> State> {
     *lib = match libloading::Library::new("target/debug/libascii_game.so"){
         Ok(i) => i,
         Err(_) => panic!("Could not load library.")
     };
-    *fun = match lib.get(b"fmain"){
+    match lib.get(b"fmain"){
         Ok(i) => i,
         Err(_) => panic!("Could not load `fmain` fn.")
-    };
+    }
 }
