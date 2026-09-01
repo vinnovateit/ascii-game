@@ -151,17 +151,12 @@ This is an example of how to list things you need to use the software and how to
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://github.com/vinnovateit/)_
-
-
 
 ### Top contributors:
 
 <a href="https://github.com/vinnovateit/repo_name/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=vinnovateit/repo_name" alt="contrib.rocks image" />
 </a>
-
-
 
 
 
