@@ -151,9 +151,6 @@ This is an example of how to list things you need to use the software and how to
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-`cargo run --bin main` for the game.
-`cargo run --bin hot` for the hot reloaded version.
-
 
 ### Top contributors:
 
