@@ -1,5 +1,4 @@
 // code for hot reloading bin.
-use ascii_game::init::*;
 use ascii_game::state::*;
 
 use libloading::*;

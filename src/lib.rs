@@ -3,4 +3,3 @@
 
 pub mod state;     // state.rs
 pub mod game_loop; // game_loop.rs
-pub mod init;      // init.rs
