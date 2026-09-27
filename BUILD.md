@@ -38,14 +38,15 @@ clears held inputs when reported by the terminal.
 
 ## Rendering options
 
-See [VISUAL.md](VISUAL.md) for presets, live tuning, captures and before/after evidence.
-The default is now the sparse, theme-native `pixatool` preset. V enables tuning;
+See [PURE_ASCII.md](PURE_ASCII.md) for current visuals, coverage-aware mapping and review frames.
+[VISUAL.md](VISUAL.md) retains the earlier tuning guide and historical comparisons.
+The default is the textured, coverage-aware, theme-native `pixatool` preset. V enables tuning;
 `,`/`.` select, `-`/`=` adjust finely, `_`/`+` adjust coarsely, R resets and P switches presets.
 
 
 ```sh
 cargo run --release --bin main -- --telemetry --cell-aspect 0.5 --fov 70
-cargo run --release --bin main -- --preset pixatool --background-cutoff 0.20 --depth-falloff 0.065
+cargo run --release --bin main -- --preset pixatool --shadow-threshold 0.18 --depth-falloff 0.025
 cargo run --release --bin main -- --ramp ' .,:;+=xX$#%@'
 cargo run --release --bin main -- --snapshot --view stairs --width 120 --height 40
 cargo run --release --bin main -- --benchmark 1000 --width 200 --height 60
@@ -67,7 +68,7 @@ interactive dimensions follow the terminal, capped at 500×240 cells. `--help` l
 - `src/render/clipping.rs`: all six homogeneous frustum planes, before perspective divide.
 - `src/render/rasterizer.rs`: pixel-center barycentric coverage and affine NDC Z-buffer depth.
 - `src/render/framebuffer.rs`: persistent floating-point luminance/depth and physical-cell aspect.
-- `src/render/ascii.rs`: exposure/levels → gamma → contrast → depth modulation → cutoff → dithered posterization → controlled glyph/edge selection.
+- `src/render/ascii.rs`: exposure/levels → gamma → contrast → bounded depth modulation → coverage-aware shadow stippling → textured posterization → thinned structural edges.
 - `src/render/terminal.rs`: raw mode, alternate screen, cursor/mouse/keyboard modes, persistent frame comparison and batched changed-row spans.
 - `src/world/test_scene.rs`: room, hallway, doorway, crates, six stairs and raised landing; matching box colliders.
 - `src/app.rs`: configuration, event processing, simulation/render scheduling, telemetry and headless validation.

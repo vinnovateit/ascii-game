@@ -1,5 +1,9 @@
 # Visual convergence pass
 
+This document records the first pass. Its hard-cutoff defaults and occupancy targets
+are superseded by the [coverage and microtexture pass](PURE_ASCII.md). Historical
+captures and measurements below are retained for comparison.
+
 The default `pixatool` preset now favors empty space, stronger density bands and
 near/far separation. This pass changes the ASCII backend and its controls only.
 Projection, clipping, rasterization, lighting, depth storage, world geometry,
