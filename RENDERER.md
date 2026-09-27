@@ -1,5 +1,8 @@
 # First rendering milestone
 
+This records the original foundation. The subsequent [visual convergence pass](VISUAL.md)
+updates the mapper defaults, theme behavior, captures, tests and measured performance.
+
 ## Audit and checkpoints
 
 The original repository contained five Rust source files: a counter state, one-second

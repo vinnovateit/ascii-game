@@ -27,7 +27,7 @@ impl AsciiStyle {
                 contrast: 1.6,
                 black_point: 0.16,
                 white_point: 0.82,
-                background_cutoff: 0.23,
+                background_cutoff: 0.20,
                 posterization_levels: 6,
                 dither_strength: 0.12,
                 texture_variance: 0.35,

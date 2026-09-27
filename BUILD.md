@@ -38,9 +38,14 @@ clears held inputs when reported by the terminal.
 
 ## Rendering options
 
+See [VISUAL.md](VISUAL.md) for presets, live tuning, captures and before/after evidence.
+The default is now the sparse, theme-native `pixatool` preset. V enables tuning;
+`,`/`.` select, `-`/`=` adjust finely, `_`/`+` adjust coarsely, R resets and P switches presets.
+
+
 ```sh
 cargo run --release --bin main -- --telemetry --cell-aspect 0.5 --fov 70
-cargo run --release --bin main -- --contrast 1.35 --gamma 0.85 --levels 7 --dither 0.7
+cargo run --release --bin main -- --preset pixatool --background-cutoff 0.20 --depth-falloff 0.065
 cargo run --release --bin main -- --ramp ' .,:;+=xX$#%@'
 cargo run --release --bin main -- --snapshot --view stairs --width 120 --height 40
 cargo run --release --bin main -- --benchmark 1000 --width 200 --height 60
@@ -48,7 +53,7 @@ cargo run --release --bin main -- --benchmark 1000 --width 200 --height 60
 
 `--cell-aspect` is character width divided by character height; set it for your font.
 FOV is vertical, in degrees. The default glyph families contain similar-density
-variants selected by a deterministic screen-coordinate hash. A custom ramp uses one
+variants selected sparingly by a deterministic screen-coordinate hash and local gradients. A custom ramp uses one
 character per band. All output is monochrome. `--view room|stairs|landing` selects
 an initial camera for interactive runs, snapshots, or benchmarks. `--mode 1..5`
 selects an initial debug view. `--width` and `--height` control headless output;
@@ -62,7 +67,7 @@ interactive dimensions follow the terminal, capped at 500×240 cells. `--help` l
 - `src/render/clipping.rs`: all six homogeneous frustum planes, before perspective divide.
 - `src/render/rasterizer.rs`: pixel-center barycentric coverage and affine NDC Z-buffer depth.
 - `src/render/framebuffer.rs`: persistent floating-point luminance/depth and physical-cell aspect.
-- `src/render/ascii.rs`: contrast → gamma → posterization with Bayer dithering → glyph families.
+- `src/render/ascii.rs`: exposure/levels → gamma → contrast → depth modulation → cutoff → dithered posterization → controlled glyph/edge selection.
 - `src/render/terminal.rs`: raw mode, alternate screen, cursor/mouse/keyboard modes, persistent frame comparison and batched changed-row spans.
 - `src/world/test_scene.rs`: room, hallway, doorway, crates, six stairs and raised landing; matching box colliders.
 - `src/app.rs`: configuration, event processing, simulation/render scheduling, telemetry and headless validation.

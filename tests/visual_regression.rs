@@ -144,3 +144,34 @@ fn neutral_and_zero_edge_weight_preserve_luminance_mapping() {
     assert!(cells.iter().all(|c| *c == cells[0]));
     assert_eq!(mapper.tone(0.6), 0.6);
 }
+
+#[test]
+fn cli_overrides_are_order_independent_and_invalid_styles_fail() {
+    use std::process::Command;
+    let binary = env!("CARGO_BIN_EXE_main");
+    let first = Command::new(binary)
+        .args(["--snapshot", "--exposure", "1.2", "--preset", "neutral"])
+        .output()
+        .unwrap();
+    let second = Command::new(binary)
+        .args(["--snapshot", "--preset", "neutral", "--exposure", "1.2"])
+        .output()
+        .unwrap();
+    assert!(first.status.success() && second.status.success());
+    assert_eq!(first.stdout, second.stdout);
+    assert!(!first.stdout.contains(&27));
+    for args in [
+        ["--black-point", "0.9", "--white-point", "0.2"],
+        ["--gamma", "NaN", "--contrast", "1"],
+        ["--levels", "5.5", "--contrast", "1"],
+    ] {
+        assert!(
+            !Command::new(binary)
+                .args(args)
+                .output()
+                .unwrap()
+                .status
+                .success()
+        );
+    }
+}
