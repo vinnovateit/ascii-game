@@ -1,0 +1,40 @@
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                     x:x
+                                                                                                                 :x:xxxx
+                                                                                                            :::::::x:x:X
+                                                                                                        :::::;::::x:x:xx
+                                                                                                    :::::::::::;:::x:x:x
+                                                                                                :::::;:::;::::;:x:x:xxxx
+                                                                                            :::::::::::::::::::::::x:x:x
+                               ::::::::::::::::::::::..............:::::::::::::::::::::::::::::::::::::::::::::::x:x:xx
+                               ::::::::::::::::::::::..............::::::::;:;::::::::::::::::::::::::;::::::::::::x:x:x
+                               :::::::::;::::::::::::..............::;::;::::::::;:::::::;::::::::::::::::;:::::X:x:Xxxx
+                               :::::::::::::::::::::::::::::::::::::::::::::::::::::::::;::;:::::::::::::::::::::::x:x:x
+                               :::::::::::::::;::::::            ..::::::::::::::::::;::;:::::::::::::::::::::::::x:x:xx
+                               :::::::::;::::::::::::            ..:;:::::::::::::;:::::::::::::::::::;:::::::::;::x:x:x
+                               ::;::::::::::::::::;::            ..:::::::::::::....              ::::::::::::::x:X:xXxx
+                               ::::::::::::::::::::::            ..:::;::::::::.....              :::::::::::::::::x:x:x
+                         ::::::;::::::::    :::::::;:..............::::::::::::.....              ::::::::::::;:::x:x:xx
+                                            :::::::::..............::::::::;;::.....              :::::::::::::::::x:x:x
+                                            ::::::::::x:x:x:x:x:x:x::::::::::::.....              ::::::::::::::x:x:xxxx
+                                            :::::::::::::::::::::::::::::::::::.....              ::::::::::::::########
+                    xxxxxx                  xxxxxxxXxxXxxXxxxxxxxxxXxxxxxxxxxxxx.xx.              xx::::::::xxxxx#::::::
+             xxxxxxxxXxxxx                 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx              xxxxxxxxx:::::xxxxxxxx
+     =xxxxxxxxXxxXxxxxxxxx               =xxXxxxxxxxxxxxxxxXxxxxxXxxxxxxxxXxxxxxxxxxxxxxxxxxxxxxxxxxXxxxxxxxxx:::::::::x
+xxxxxxxxxxxXxxxXxxxxXxxxxxxxxxxxxxxxxxxxxxxxxxXxxxxxxXxxxxxxxxxXxxXxxxxxXxxxxxxXxxxxxxxxxxxxxXxxxXXxxxXxxxxxXx::::::::::
+xxxxxxxxxxxXxxxxxxxxxxXxxxxxxxxxxxxxxxXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXxXxxxxxXxxxxxXxXxxxxxxxXxxxxxXxxxx::;:;:::::
+XxxxxxxxxXxxxxxxxxxxXxxxxxxXxxxxxXxxxxxxxxxxxxxxxxxxxxxxxxxXxxxxxxxxxxxxxxxxxxxxxxxxxxxXxxxxxxxxxxxxxxxxxxxxxx:::::::;::
+xxxxxxxXxxXxxxXxxxxxxxxXxxxxxxXxxxxxxxxxxxxxxxxxxxxxxxxXxxXxxxxxxxxxxxxXxxxxxxxxxxxXxxxxxxxXxxxxxxxxxxxxxxxXxx:::::;::;:
+xxxxxxxxxxxxxXxxxXxxxxxxxxxxxxxxxxxxxxxxxxxXxxxxxXxxxxxxxXxxxxxxxxxxxxxxXxxxxxxxxxxxxxxxxxxxxxXxxxxxxxxxxxxxxx::::::::::
+xxxxxxxxxxxxxxxxxxxxxxxxXxxxxxxxXxxxxxxxxxxxxxxxxxxxxxXxxxxxxxxXxXxXxxxxxXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXxxxx#::::::::::
+x%x#x%x#x#X#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x#x%x#x#x#x#x#x#x#x#x#x#x#x#x#x%x#x%x#x#x#xxxxx:::::::
+########################%%#####%##########%##%############################%################%##############%###::xxxxx:::
+x###x###x###x###x###x###x%##x###x###x###x##%x###x###x###x###x###x###x#%#x##%x###x###x#%#x###x##%x%##x%##x%##x###::::xxxx
+#############%###################%%##%######%####%########%##########################%#%########%##################::::x
+############%############################%#############%##############################################################::
+######################################################################%####%########################%##%################

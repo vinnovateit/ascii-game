@@ -1,7 +1,7 @@
 use ascii_game::{
     render::{
         ascii::Ascii,
-        capture::{Metrics, density},
+        capture::density,
         framebuffer::Framebuffer,
         scene::{Mode, render},
         style::AsciiStyle,
@@ -14,7 +14,7 @@ fn ndc(distance: f32) -> f32 {
     c.far / (c.far - c.near) - c.near * c.far / ((c.far - c.near) * distance)
 }
 #[test]
-fn three_views_are_sparse_repeatable_and_keep_raw_geometry() {
+fn three_views_are_repeatable_and_keep_raw_geometry() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
     let world = test_scene();
     for view in ["doorway", "crates", "stairs"] {
@@ -33,21 +33,8 @@ fn three_views_are_sparse_repeatable_and_keep_raw_geometry() {
             if width == 1 {
                 continue;
             }
-            let metrics = Metrics::measure(&fb, &cells, &camera);
-            assert!(
-                (0.4..0.76).contains(&metrics.occupancy),
-                "{view} {}",
-                metrics.occupancy
-            );
-            assert!(
-                (0.15..0.45).contains(&metrics.density),
-                "{view} {}",
-                metrics.density
-            );
-            let upper = &cells[..width * (height / 4)];
-            assert!(upper.iter().filter(|c| **c == b' ').count() > upper.len() / 3);
             if width == 120 {
-                let capture = root.join("visual/after").join(view);
+                let capture = root.join("visual/pure-ascii/after").join(view);
                 let text: String = cells
                     .chunks(width)
                     .map(|row| format!("{}\n", std::str::from_utf8(row).unwrap()))
@@ -77,11 +64,6 @@ fn three_views_are_sparse_repeatable_and_keep_raw_geometry() {
                     ((1. - (d / camera.far).sqrt()).clamp(0., 1.) * 255.).round() as u8
                 }));
                 assert_eq!(depth, std::fs::read(capture.join("depth.pgm")).unwrap());
-                let old = std::fs::read(before.join("ascii.txt")).unwrap();
-                let old_occupancy = old.iter().filter(|c| **c != b' ' && **c != b'\n').count()
-                    as f32
-                    / (width * height) as f32;
-                assert!(old_occupancy - metrics.occupancy > 0.2);
             }
         }
     }
@@ -109,7 +91,7 @@ fn identical_lighting_gets_sparser_with_distance() {
     assert_eq!(near, cells);
 }
 #[test]
-fn empty_pixels_and_dark_edges_remain_spaces() {
+fn empty_pixels_stay_empty_and_dark_geometry_is_preserved() {
     let camera = viewpoints::camera("doorway", 70f32.to_radians()).unwrap();
     let mut fb = Framebuffer::new(12, 8);
     fb.luminance.fill(1.);
@@ -126,9 +108,13 @@ fn empty_pixels_and_dark_edges_remain_spaces() {
         }
     }
     mapper.convert(&fb, &camera, &mut cells, false);
+    assert!(
+        cells
+            .chunks(12)
+            .any(|row| row[..5].iter().any(|c| *c != b' '))
+    );
     for row in cells.chunks(12) {
-        assert!(row[..6].iter().all(|c| *c == b' '));
-        assert_eq!(row[6], b'|');
+        assert!(row[5..7].contains(&b'|'));
     }
 }
 #[test]
@@ -173,5 +159,50 @@ fn cli_overrides_are_order_independent_and_invalid_styles_fail() {
                 .status
                 .success()
         );
+    }
+}
+
+#[test]
+fn flat_visible_surfaces_have_microtexture_without_temporal_noise() {
+    let camera = viewpoints::camera("doorway", 70f32.to_radians()).unwrap();
+    let mut fb = Framebuffer::new(80, 20);
+    fb.luminance.fill(0.6);
+    fb.depth.fill(ndc(5.));
+    let mut mapper = Ascii::default();
+    mapper.style.edge_weight = 0.;
+    mapper.style.dither_strength = 0.;
+    let mut cells = vec![b' '; 1600];
+    mapper.convert(&fb, &camera, &mut cells, false);
+    let mut glyphs = cells.clone();
+    glyphs.sort_unstable();
+    glyphs.dedup();
+    assert!(glyphs.len() >= 3);
+    let first = cells.clone();
+    mapper.convert(&fb, &camera, &mut cells, false);
+    assert_eq!(first, cells);
+    mapper.style.texture_variance = 0.;
+    mapper.convert(&fb, &camera, &mut cells, false);
+    assert!(cells.iter().all(|c| *c == cells[0]));
+}
+#[test]
+fn covered_black_and_uncovered_black_are_different() {
+    let camera = viewpoints::camera("doorway", 70f32.to_radians()).unwrap();
+    let mut fb = Framebuffer::new(80, 20);
+    let mut mapper = Ascii::default();
+    let mut cells = vec![b'?'; 1600];
+    mapper.convert(&fb, &camera, &mut cells, false);
+    assert!(cells.iter().all(|c| *c == b' '));
+    fb.depth.fill(ndc(5.));
+    mapper.convert(&fb, &camera, &mut cells, false);
+    assert!(cells.contains(&b' '));
+    assert!(cells.iter().any(|c| *c != b' '));
+    // Even maximum dither/edges cannot put marks outside coverage.
+    mapper.style.dither_strength = 2.;
+    mapper.style.edge_weight = 1.;
+    fb.luminance.fill(1.);
+    for z in [f32::INFINITY, f32::NAN, -0.01, 1.01] {
+        fb.depth.fill(z);
+        mapper.convert(&fb, &camera, &mut cells, false);
+        assert!(cells.iter().all(|c| *c == b' '));
     }
 }
