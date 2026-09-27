@@ -10,4 +10,6 @@ crate-type = ["lib", "cdylib"]
 name = "hot"
 
 [dependencies]
+crossterm = "0.29"
+glam = "0.30"
 libloading = "0.8"
