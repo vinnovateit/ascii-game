@@ -41,7 +41,7 @@ pub fn render(
             if normal.dot(camera.position - world[0]) <= 0. {
                 continue;
             }
-            let diffuse = 0.22 + 0.78 * normal.dot(sun).max(0.);
+            let diffuse = 0.32 + 0.68 * normal.dot(sun).max(0.);
             let light = if mode == Mode::Wireframe {
                 1.
             } else if mode == Mode::Lighting {

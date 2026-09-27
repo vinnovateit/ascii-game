@@ -1,3 +1,4 @@
+pub mod ascii;
 pub mod clipping;
 pub mod framebuffer;
 pub mod mesh;
