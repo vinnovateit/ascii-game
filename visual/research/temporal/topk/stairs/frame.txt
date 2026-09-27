@@ -1,0 +1,40 @@
+:--_~~-~_-;___;-~--_,,`,,`:`,::,,:. .   . .`:`,:,'`:`::```... ....... `::,:::.:`,:,.`    .`. :`.::_xxx===xxxxxx====xx==<
+:__;^^~^^__!^;~`;';_,:_,. ```::`.,` . :...,,:.`,::.` .`` `.:,,,....   ,:::` .`... .,.,:....:`.  _xlx==l[ll[]][[=]]][ll[<
+''^;~~^^^~_!^^-;;;';';':'`...:`:::.,.   `. ````````.......````. .. . `:.` .........:,:``````._/xivllxlil==[]][[==][=xl[(
+:;'-;_~-^^!-_!-'`;-;-'';,``'---~x_--------x----xx--------------xxxxx------xxxxx-xx---------x(vxxvxi=l[i[x]]=[=[=l===l[=<
+';_;`'~~-__^-^_-~__'';::':,:!)|>v/</i><\<|ivxxv++v+v\(!(\|++xvi==l=v<)\>>/xi+lvxxivxx</>(++xivviiiv=vv==]l=][l]===[ll][(
+:-^',',_``';_;_-__;;'';';;_,!)iv<v+\(<(>++>+xi++xxx)+/+\|<+ivvll=l+()|<||/i+x=xivx/+<|(|>+iivxvvvvllv[lv[[l[=[vlix=v]][<
+:;'';,;-;;;'_;_~___-;-____;;_(\|/>+<<>/(<+(|)|v++v\|(/)!>|+ixv+\/\)><\()(|(/i)x/+\<)\^)/++vl==vllv=i=l[][[vv=xix==x===l<
+:`;,'-':,'`-;';;~^~~_;;_;_;'^<(><)xx+((++ixv><xil+(<<(\>(|++vi)/(\||></\/(|>\(<\/<\)\!<>++vl=l]=xll][l][][l=vlilvv=iv=xi
+:;''_:'`;''```'^;--^^!-~_-;-'|\/|>x/++\)x/i>ixilvvv/i\/>+|>(>\+(\((/(//\\|<>>(|\)<|<><)||v+=l=[=ll=[==[=][v+ivvix+l=v==(
+:,,,`__,`.,`,''`;_'~~^^-~_~''(x/(|/x/|x\/)v+\++vxiixiiixx<>/\/<>|<|</)^)\>+</vxx+xxv\xxxxv/vll]][====[===l+++\vivix=xvx<
+:'',;;__`.`,:.:.,_';--;~~^_;'xv\ixv\(+i\xv/+(vv+=v=llxlvx<|>^)\/\|)<)()(|v+<vv++/+ilx+ivi\<v===[===[llivi+\xv<xil=llvili
+:'-~';;'''.::::'''''-'';;~_;;^x+\\x)|vv+ivxv+iixivllllilixvv+x//</((>^/>|<>)|/x/ivilxxivxv+=l[]llll=[xvixvxx+/v=l[ll==[(
+:;-__--_:,,:```,`';_;`';---~-|iixxii+lllivvlvxilllxlxll=ixix+xx(<)(\|/<</x(/>/++v+vxllxvxxv=[[[il=xllillx+<+ixxix][x]l=i
+!-~^'__^-;':``,::';',-'';;;;-^+i++<++illl==ixillili+vvvxlxvlxv(\)|/\)<>>/\|>+\x/>+ixi+ixxlv]][=l=l=v=vixiv\+|+v==[]]]]=i
+!'~--^-_;'`,,,,.`,`:,`''-~~_~_<>/><()+v+xix)<>>vlilixxxii++i+\v+ivvi/>(<i++vxx((<|\vi+\+iv][][===lvxlx\xvivvvvl]==]==[l(
+:;~!___;;__,,,.`._`::''';_~__~>(/\/|)+vvi+<)<||i+vxllxl=xvxix+ix+x=vv+++xixl+(\/(/>+\+/>++]]==[l=[vxvvxvi(vviixl==l][==i
+!--~'-_;!;-_;_,_,`'-;_:;''';-;|(\\/|vvlxl<+(!>\++=+vlxvv+vv(|ii+viivivxxvv=lv+\)<++x<)i<+xl[]=vlivll==lxiviix=l[lll][]=<
+:'-^--^-~__-~-__~~-_~''_-;;;``<|xvxxv+xv+x+<<</+xixivil=vxi></)</ixi++llxvlll+(|x<+ix+i+/ixlllixiv==l===[==l=[]=[l==]][(
+!~_~~_;'~_____!_';;^^_';';';,`>/>++x=ii=ii+\/>+\ill=x=lixv\><)|)(xliv[==xvl=i>/v+<+xx+xv(/xi==lxiv==[=[l][[]]][][]=[]=[i
+!^^-_~_~^~!^~^^^^_';-'``'```::^||iivvxv+|x+v+<|/+\>+\iiivi/><)<|<vvivxlxvixvv+)\<|x/+)<(||xviiixill]=]=]]]]][]][][[[l=]i
+:''~^!~--~^_'`_;-;''-;,`:`:,:,|xvxv+i+v+|>++ixx//\></++iv<)/\^\>//vx+=li++>+)+>v<<(/v+<\>+i+x+vv++xil=l==[i[=]]=]]=[[[=(
+::-';;-~_^^-'`_,_':''_,:.:,,::!xiii+\(<|<<>>v/++/\|>|vx<\<(\(\><vvvii\+i<|+x><)|)||+xx()/vixiivv\ixlixvxxlivl=[[]=[====<
+._____~~^^'````;'_-_`':`:`'____x+++i\)\<(><|+iv+<>+/(>xv/</\<+|ixxx</<!^++<+)<)|||>xli\</vli=vi/vvvvlxllxli=ll===[[lv=x(
+:`''';`';;~;_;-,';'';',``'';-;~xx+(<(<|/||<|+xv+i)><\)/)/x(>+\xv+x+\>\>></)v<<></i++i\\<\i==li++/i+xixvxxxivx==l[vl[]l+<
+,`;;-`_;___,''~;_;````:``,`;;`-+<++(^)\)<(iivi+(>(|\|\+<+x+vlx+vi/+\xi/>><+++\(|>/++v+((+ill]lx+++ix+livx=[]vlxl[vi=lli<
+,-;','^';_''__;~-'-,.`,:.`,;;`:/x\\(\|>\+\+xllix\(/!|>>/|x+=ii+|<>v++xx+x|i\iv++|+\++>+v/xilix||+x/vv=v][l[lvlxil[li+ll<
+:,,:';_-;'`_;!~~~'_;';,,`.`,'',vxv<+\xi+xx<+xixxx>(v<>/<+\i+v++xx<+|)\>+(i+<>(><>v\>)>xv+xilxi++vvi=ii==[=[llvli[ixxixl(
+`,;,,,`;`,';_'`''--;-_',::,,;,,^lv++x+vxxiliv<<ixvvv<()>)(<i(+i+ix+/)()|+/x\+x>/+<(>+(\i=xilxi+x+]][=xx=[illl=xilvlixxi<
+;',``,,``;'';'-`,,-_-~'_,;_;;'_]&&&&&&&&&&&&&&&&&&&&&Xx&v&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&lillvxix==[=vxii==v=l=i+xx/lxi(
+`:``'',:,'::`'',',__-;;';';-_*WWW@WWMMM###WWWWWW@W@MWMMMWWM@@MMWWWW#WWMMMWM*#WMWMMMMMMWWWM&[lllll]=l=l+vixi+xi+x+i+viii(
+'.._-;`:;`:`:`.,;--'';;''~v*WW@WWW@MM##WWWWW#MM@WWW@WWWWWMWW##M*MMMW##@M@MMWWWWW###W#####MWM#&]l=v]x=l+vli+v+<i=x+x=xx<(
+``:'--;'`':,_,,'`,_;;';_XMM@WW@@W#M###MM#MMWWMM@M@M@MWM#M#M**WMMMMMM#MM@@@@M@W@@MWM####MWWWWM@@*[llll]liliixxx+=lxv=vxv)
+_'`;'``'`,::`;'`_;-_~i*MWMW@@@@WWWMMWMW@WWMWM@WMWWW#*#*M*#M*MMM*W######MWWWM@@@W@WM#WW#MM@MW@WWWW#&lv=lvviiv++i/l+ivlv=(
+__;;;,::.:`__-_-''\X*MWMMWMM@#W#MWMWW##M#M###MMMW*M#M**MWWWWWWWWMMWWWW###*MMMMWM##MMMWWWWW@M@MWM@W@#&]l]===vi++xl\vlllx(
+_;'_```:,,:,``_-_*W#@WMMMWMWMMMMW####MWMMM*##***%M#%%*#M#M@@@@@@@@@W@@#W**###M#M*M*W#WMWWMWMWWMW@WMWWW&[]ilivv+xvx+ll][i
+'`_`;;``',_`__l*@WMM#M#WWWWWWWWWMW@W@@WWMMM#*MM#W#WWMMMMWWM#MMW@@W@@@@WWM****W#MM*WMMMWW@@@WWW@W@MW@MWMW#&]xvlvxvi==xil(
+';`,;_':;;'\XW#W#W**#%WWWWW@@@@@@@@@@@@WW##M#M*MWWMWW@##M##M#WM@W@@W@@MW#M***M**W#WMWWMWW@W@W@@@@M@W@WW@@##&[llixixlxvl(
+'_:''';:-l*@MW#M*#M**#M@@MW@@M@@@@@@MMWW##%***MW#MW@@MW@M*MMM#M#WMM@W@WW###*W#*#MM*#MWWWW@@@@@@@M@@@@WMWMW#W#*&lvixllxv<
+---'`:\X*#M##W**MM*WM#MWW#W#MMWW#M#WMM#MMWWMM#W#MMMM#W#MW*#MMW##MWWMMM@@W@WWWMWM#M*WMMW#WWW@#MWW@MMWMW@MW#WWW###&[ivvl=(
+';-'_XWWW&WWW&&&&&&&&&&&&&WW&&&&&&&W&&&&&&&&&&&&&&W&&&&&&&&&&&&&W&&&&WW&&&&&WWWWWWWWWWW&&&WWWMW&&&&&WWWWWWWWW&&&&&&[xxx)

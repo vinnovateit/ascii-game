@@ -1,0 +1,1 @@
+target/release/research --frames 180 --motion yaw --sequence 1 --output visual/research/temporal/fast/yaw --method fast

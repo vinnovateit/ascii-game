@@ -1,0 +1,66 @@
+[
+  {
+    "backend": "fast",
+    "samples": "3x6",
+    "width": 120,
+    "height": 40,
+    "median_reported_fps": 60.0,
+    "bytes": 192568
+  },
+  {
+    "backend": "fast",
+    "samples": "3x6",
+    "width": 200,
+    "height": 60,
+    "median_reported_fps": 60.0,
+    "bytes": 482251
+  },
+  {
+    "backend": "matched",
+    "samples": "3x6",
+    "width": 120,
+    "height": 40,
+    "median_reported_fps": 57.5,
+    "bytes": 590726
+  },
+  {
+    "backend": "matched",
+    "samples": "3x6",
+    "width": 200,
+    "height": 60,
+    "median_reported_fps": 23.0,
+    "bytes": 648468
+  },
+  {
+    "backend": "matched",
+    "samples": "2x4",
+    "width": 120,
+    "height": 40,
+    "median_reported_fps": 60.0,
+    "bytes": 606278
+  },
+  {
+    "backend": "matched",
+    "samples": "2x4",
+    "width": 200,
+    "height": 60,
+    "median_reported_fps": 42.0,
+    "bytes": 1142505
+  },
+  {
+    "backend": "enriched",
+    "samples": "3x6",
+    "width": 120,
+    "height": 40,
+    "median_reported_fps": 60.0,
+    "bytes": 393001
+  },
+  {
+    "backend": "enriched",
+    "samples": "3x6",
+    "width": 200,
+    "height": 60,
+    "median_reported_fps": 32.0,
+    "bytes": 588493
+  }
+]

@@ -1,0 +1,12 @@
+backend=matched
+samples=3x6
+source_noise=0.22
+lighting=true
+contact=0
+context=0
+reconstruction_target_black=0.055
+reconstruction_target_white=0.7
+metric=normalized+gradient
+search=exact density bound
+hysteresis=0.035
+glyphs=" .,'`:;!il|/\\-_~=+*xX&%#MW@<>^v[]()"

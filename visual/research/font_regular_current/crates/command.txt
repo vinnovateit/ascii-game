@@ -1,0 +1,1 @@
+target/release/research --method gradient --sample-width 3 --sample-height 6 --atlas /tmp/research-regular-3x6.pgm --noise .22 --lighting 1 --black .055 --white .7 --view crates --frames 4 --output visual/research/font_regular_current/crates

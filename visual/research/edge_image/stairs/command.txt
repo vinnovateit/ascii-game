@@ -1,0 +1,1 @@
+target/release/research --method gradient --view stairs --frames 4 --output visual/research/edge_image/stairs --sample-width 3 --sample-height 6 --edge-boost 1.5 --noise .22 --lighting 1 --black .055 --white .7

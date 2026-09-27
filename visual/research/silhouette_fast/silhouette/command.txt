@@ -1,0 +1,1 @@
+target/release/research --method fast --view silhouette --frames 4 --output visual/research/silhouette_fast/silhouette

@@ -1,0 +1,32 @@
+{
+  "backend": "enriched",
+  "view": "crates",
+  "occupancy": 0.63375,
+  "entropy": 3.2223758089975574,
+  "atlas_density": 0.08556458787218592,
+  "common_target_mse": 0.027637663042704375,
+  "common_target_mae": 0.128376860929557,
+  "distribution": {
+    " ": 1758,
+    "#": 22,
+    "%": 22,
+    "&": 12,
+    "'": 172,
+    "*": 322,
+    "+": 133,
+    ",": 154,
+    "-": 57,
+    ".": 282,
+    "/": 6,
+    ":": 118,
+    ";": 75,
+    "=": 453,
+    "X": 324,
+    "\\": 5,
+    "`": 188,
+    "x": 542,
+    "|": 18,
+    "~": 137
+  },
+  "target": "same PGM-quantized enriched source and 3x6 atlas for all three backends"
+}

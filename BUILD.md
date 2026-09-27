@@ -111,3 +111,6 @@ uv run --no-project python scripts/hot_smoke.py
 The Python smoke scripts use only the standard library. The hot test also uses the
 OS C compiler to exercise the actual C ABI. Snapshot fixtures are in `tests/snapshots/`.
 See [RENDERER.md](RENDERER.md) for measured results and remaining limitations.
+
+Opt-in glyph reconstruction experiments, captures, benchmarks and reproduction commands
+are documented in [RESEARCH.md](RESEARCH.md). The accepted fast renderer stays default.

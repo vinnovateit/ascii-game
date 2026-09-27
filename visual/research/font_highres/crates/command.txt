@@ -1,0 +1,1 @@
+target/release/research --method gradient --view crates --frames 4 --output visual/research/font_highres/crates --sample-width 8 --sample-height 16 --atlas visual/research/atlas/calibrated-8x16.pgm --noise .22 --lighting 1 --black .055 --white .7

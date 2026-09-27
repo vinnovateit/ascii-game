@@ -3,3 +3,4 @@
 tests/snapshots/*.txt whitespace=-blank-at-eol,-blank-at-eof
 visual/**/ascii.txt whitespace=-blank-at-eol,-blank-at-eof
 visual/**/frame.txt whitespace=-blank-at-eol,-blank-at-eof
+visual/research/**/*.ansi whitespace=-blank-at-eol,-blank-at-eof

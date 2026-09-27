@@ -1,0 +1,1 @@
+target/release/research --method gradient --sample-width 4 --sample-height 8 --shortlist 8 --view stairs --frames 4 --output visual/research/font_combined/stairs --atlas visual/research/atlas/calibrated-4x8.pgm --noise .22 --contact .6 --lighting 1 --black .12 --context .4

@@ -1,0 +1,1 @@
+target/release/research --frames 180 --motion strafe --sequence 1 --output visual/research/temporal/matched/strafe --method gradient --sample-width 3 --sample-height 6 --noise .22 --lighting 1 --black .055 --white .7

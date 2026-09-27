@@ -1,0 +1,1 @@
+target/release/research --frames 180 --motion forward --sequence 1 --output visual/research/temporal/fast/forward --method fast

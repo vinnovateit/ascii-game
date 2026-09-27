@@ -1,0 +1,1 @@
+target/release/research --method gradient --sample-width 4 --sample-height 8 --shortlist 8 --view doorway --frames 8 --noise .22 --contact .5 --lighting 1 --context .4 --black .055 --white .7 --output visual/research/topk_v2/doorway --top-k 3

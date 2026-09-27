@@ -1,0 +1,13 @@
+width=120
+height=40
+position=Vec3(0.0, 1.65, -8.0)
+yaw=0
+pitch=-0.12
+fov=1.2217305
+near=0.08
+far=80
+non_space=3338
+non_space_percent=69.542
+mean_glyph_density=0.24313
+mean_raw_luminance=0.34124
+mean_depth_world_units=3.53597

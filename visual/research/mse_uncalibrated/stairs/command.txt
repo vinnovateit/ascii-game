@@ -1,0 +1,1 @@
+target/release/research --method mse --view stairs --frames 4 --output visual/research/mse_uncalibrated/stairs --gain 3

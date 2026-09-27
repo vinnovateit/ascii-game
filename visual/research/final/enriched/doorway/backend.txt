@@ -1,0 +1,12 @@
+backend=enriched
+samples=3x6
+source_noise=0.22
+lighting=true
+contact=0
+context=0
+reconstruction_target_black=0.055
+reconstruction_target_white=0.7
+mapper=accepted fast
+mapper_settings=style.txt
+hysteresis=0
+glyphs=" .,'`:;!il|/\\-_~=+*xX&%#MW@<>^v[]()"

@@ -1,0 +1,1 @@
+target/release/research --method gradient --sample-width 4 --sample-height 8 --shortlist 8 --view crates --frames 4 --output visual/research/compact/crates --compact 1 --noise .22 --lighting 1 --black .12 --context .4

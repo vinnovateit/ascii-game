@@ -1,0 +1,32 @@
+{
+  "backend": "enriched",
+  "view": "doorway",
+  "occupancy": 0.6266666666666667,
+  "entropy": 3.2503657817412956,
+  "atlas_density": 0.07609599673202615,
+  "common_target_mse": 0.02539151679553448,
+  "common_target_mae": 0.11842719680464778,
+  "distribution": {
+    " ": 1792,
+    "#": 5,
+    "%": 3,
+    "&": 1,
+    "'": 181,
+    "*": 264,
+    "+": 142,
+    ",": 159,
+    "-": 130,
+    ".": 267,
+    "/": 10,
+    ":": 200,
+    ";": 131,
+    "=": 450,
+    "X": 251,
+    "\\": 12,
+    "`": 193,
+    "x": 439,
+    "|": 18,
+    "~": 152
+  },
+  "target": "same PGM-quantized enriched source and 3x6 atlas for all three backends"
+}

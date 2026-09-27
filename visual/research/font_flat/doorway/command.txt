@@ -1,0 +1,1 @@
+target/release/research --method gradient --sample-width 4 --sample-height 8 --shortlist 8 --view doorway --frames 4 --output visual/research/font_flat/doorway --atlas visual/research/atlas/calibrated-4x8.pgm

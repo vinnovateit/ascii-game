@@ -1,0 +1,40 @@
+. `              '     ,`. .'               ,   `.` .  ,.      `  ``       ` '  .  `      ,  . `   `    '  '   ``,   .  
+,                    `       '    `       .    ,     ' ''    '     ,    ` '           , ,      `    '.  .         ,  , `
+ `       ,     ,   ',  `' ,           '. `               .,,,                 '     ,    .      '      ` . . '  ,   //==
+      '.    ,       ' ,  '   '    '          .    .  . .    ,   ,  .      .   '    .      ' '.  ,          '    //==+~==
+'      ' `   ,    `      .       . '   ,'. .  '       `,  `             .'    .'``'` .    '     ,    ,   . //====+~x+=~+
+    `   . .  `   ..      `    .  ,                ,.      ,,                     `  '        .         //==~*~X=X=+XxX**
+.,              .   .      .`                       ` `` '., . `'   '    .          `  `. .  `    //===x~=+x~+*~~+==+~x+
+   ''  .     ,  , .       ,       '`    `       `,`     .,   `,      ''   ,.         .  .     //==~~~==+=xxX+====x=X++*=
+                     , .  '    ` ,  '        '                     , .            ,     .//===+x~x==+x~x+x+=~X+*~+*~=*~x
+.      .`   ,,   `  ,  .            ,          ,' ' .       `   `     `.  .     `  , //==X~=**x~**X===xx*xx+X=xxxx+=X=~x
+            ` ``.  '       `       . .     . , '`        `   ` `      .   .  ` ,//====-~+++=X~~X*==~+*~X=~~xX=~=~=~~x~*~
+=======\\  .        ,  ,      .     `  , .             ..     . `''  .      //==+==x*x==x==X=x+X==~===~+==*xX~~=x+x++Xx+
+~=x=;X~-~======================\\  `    .  .'   .       .'            .//===+~=X+==+~+=+====X===~=~X~x=X=~+=~+*x===*xxX~
+*==~~=~=::x+=+=====:~+-:x:x=X+:;:======================\\ `    '   //==~X=x*++x=+~xXX==++x=~++x~x+==++x=*~*=x+*~==~x=x*=
+x~=~~+:=-~=++~X==;==:~~=+-:+:=+::~:::;=;=-:::~-:-++=x==============+X=~+X*Xx=*+=**+=Xx+=+==+xx=~~**x=x=~==~*~x++=X=x+x~~
+==+~~=+========:==-+==;===+x==-::-~;+-;---=;;+~;=:;=~:=;=:~;=;x:+:*===+=+~+*+~X===X+x==X~=+~X===x*===~xxX==+xx==+===~=~X
+~:~x+:=+:x=;~~=~;~+~~~~+=++:~x+=~:~xx::~-=~xx++=+:=~~==*:==+~=-+::X=x=~+~x+x+*X=+x=~=*+~=+~x~~=x=xX=x~Xx=+==+=~=~=+***x=
+=X~=:x=:~~=+==~~++==~+==*==:+~/\==============*:~=x===++~~==+=;=:-+XX==++=+=*=*=~X~+=+++++=+~=~=+=~~=XX=+=*~=x~*=~x=Xx*=
++x~==~==-~:=:*:-:~~X=+=;===+x~|,|:-;~:;=;::-;|*X+~:+~~=::-:x+=+==~======*~*x=x+=X====+=x==~=+=~+~~**x*+xxX~~~=~X=*===X==
++~x:=~x+X++-+::==+:=~;~~=:x=++|.|::=~~=::-=-;|*x==:=:=~:x~+:/==::=`--:;-\x+~=~~X=+==xx+XxX==x+x=~x+x==X==~=~+=+++**=+=x=
+============~~~===x-~==~~+=~=|  ~::=;=:--=====X=-:+:++~===::=-;:`:`-::,;.|=+==X+=x===+*x+*+~+X++=x+=x*===+x=+~=~+xX~x=X~
+=Xx~=XX=~*=~/=====`;=:+:~+X==~=====:-:~:-|##X%xx==+===~+~=+-;:,:;,-::,:;-|==Xx*~+=~+~~~=~x+~*~+==XX~x=x~x~+~==*~=+*~=~=~
+:..-:-;-;-;/   `  |;:-==~:=*==%W###\\===:-::=-X-~-~~~=+:~=:+-::;;::;:,,.;|=X=~~~x=++x~xx=~~X+=+===~X=~+==*X*~=*~=+X+~x=x
+:.;;;:--:,.| ,`' |=+x=:+==~=:=;*%X&x%X&*=====XX==+*;=x===~++:::`:,;:::.-|*+=XxX==/=W#============#&Xx#++~=========x===x=
+-;--.-:;':;|.     |~+~x+===X+~~x=*x*xX*+=+x*=*xxXx*=~XXX~x\=;+;.`-::-,'-|X:*~*==|**=\%/-:+;:;\&&X========#%X&==:---x=~x=
+:-:::.-:.-:| .   .|+xxXxXx*x*=xxx*XXxxx=xX*X*=XXxxxX*X***X*\=======':-;;/*x*xXxxx|::~=XX=***xx*x-~=;-:;::`\M/X~=*~=X~=+*
+;::-,;:::::|      |XXxXx***x**Xxxx+xx*xxxxXxXxx*xXxxxxXx=xx*xXxxXx~=====xX~*Xxxx|+:+-:=======\\x*=Xx~X*x====++~//-\x~~~+
+.::.-'==-:;\\ ,,'=xx*x*xxx*xXxX*XXxXX*X*xx*x*XxxX*X*x*xXxXXxxXxxXx*xxXxX**x*X*Xx|:=:~:-=~::+::+======;:-;:--:-;,:,.|x=*X
+:`,;:|M-==~=+  //xxx=xx**xXxXxXx~xxxXxxxxxx*xXxXxx*xxX*x=xx*=X*xxX=xxx**xx~XXXxx|:;~:==:-=:=::;:;:--'-.:::;:.::::-'|=x=~
+==::,;;:;.-` ==*x*x*x*x*XxXXxXxxxXxXXx*x**xxxXx*XXxx*xxxxX*xxxXx*xxXX*xXxX**xxxX|:=:+;-=;:~;:=~+=-+;:;-:;.;:-.:-,:,|=~+x
+**===========*X*X*Xxx*x*Xx*xx*XxxXX*XxXXx*x*xxXx*XxXX*xxX*xX*#*Xx***Xx*X**XxXx*XX-==-:;:+::::+--;=--;::-;;;,.:-;:;;|XXxx
+xxX*xxXxx*xxxxxX#x*xxXxxXxXxXxx**xxx%*xXxxxx*x&X**x*%X*Xx**x***XXx***Xxx**XXx*Xx%*x#\===;--;=:=-;:::-:,:--:':,;-;::|x**x
+*x*x*xXxxxX*XXxxXX*XXxXx*xx*xXXxxx*xxX*xxxXxXXxxXxxXXxXxx*x*x*X*XxxX*xxXxxX****x*;-:**|M\===;::;:=:~::`::;-:;-;;:-/XXXxx
+*xXxx***#Xx*xXx*XxXXxx*xxxxxxxXX**#xXxx*%*xxXxx***xx*x*xX*xX#xX***%**Xxxxx%xxxx*xx==-;:=X+|M\===~;;::-:-`:`===:;.;|W=xx*
+x*xxxxxx*xxx**x*XXXxxxxxX*xx**x*XX*x**xXxxxxxxxX*xxxXXxxXXxXxxxxXx*x***Xx*Xx*x*xXxxXx==;::-=+*/M\======'--/@%\~+*+\=~XX*
+xxxXXxXXxxxXXx%*XxxXxXXxxXxXXX%*#xxxx*xxxXxxxXxxxX**x*xXXx*X#x**X*xx*X*X&xXX*xXXxxXX*x%X===-~+X=*=/@W@\-x~;===~;-.:/xxxX
+*XX*X#xx**x*X*x**xX#XXxXxxxx*x*xx**xXxxXXx*x*x**Xxx*x**xx***xx**XxxXXX*X*xxxxxxxXXXX**X*xxx#==+:-:~====~;:;,.`/====XXxxx
+*X%xxxx*xx#xx*xxXxX**x*x&X%x**XXxxxxX*XXx***xxxx#*#XxX%*Xxx*Xx*x#**XXXxXx**XXXx*XXx*XXXxxxX*xxX===--,---======*x*xXXXXx*
+xx**xx*xX#xXxx*Xx*xxxXX**x*XXxx**%X%X*x*xxX%x*Xxxx*xxxX**xxxx#xxX***xXxx*xxXx*x#xxxXxX*xx*Xxx*Xx*x*=====X*Xx**xxX*x*xXX*
+x*#x**x*xxxxxxXxX*#xx*xXX**X%**xx%xX&xXx*xx*xx*X&x*X&X*x*xxxX***xxxx*xxxxx%xXx*x#*xX#xxX*x&xxX*xx#xX*xx*x#XX**x*#x#x&*xx

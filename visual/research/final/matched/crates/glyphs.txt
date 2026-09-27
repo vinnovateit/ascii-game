@@ -1,0 +1,9 @@
+glyph_set=ascii
+width=120
+height=40
+non_space=4710
+non_space_percent=98.125
+unicode_cells=0
+block_cells=0
+utf8_bytes=4840
+mean_glyph_density=0.44472

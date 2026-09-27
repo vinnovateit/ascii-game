@@ -6,3 +6,9 @@ dist/
 # Added by cargo
 
 /target
+
+# Regenerable temporal frames are losslessly embedded in the research review HTML.
+/visual/research/temporal/**/frame-*.txt
+
+# Optional local font calibration is generated from the reviewer's own font.
+/visual/research/atlas/calibrated-*.pgm

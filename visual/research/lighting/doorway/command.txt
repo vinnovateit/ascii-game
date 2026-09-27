@@ -1,0 +1,1 @@
+target/release/research --method gradient --sample-width 4 --sample-height 8 --shortlist 8 --view doorway --frames 6 --output visual/research/lighting/doorway --lighting 1

@@ -1,0 +1,1 @@
+target/release/research --method gradient --sample-width 4 --sample-height 8 --shortlist 8 --view doorway --frames 6 --output visual/research/context/doorway --noise .22 --contact .6 --lighting 1 --black .12 --context .6

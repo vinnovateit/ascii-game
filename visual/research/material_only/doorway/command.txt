@@ -1,0 +1,1 @@
+target/release/research --method gradient --sample-width 3 --sample-height 6 --shortlist 0 --noise .22 --lighting 1 --black .055 --white .7 --frames 30 --output visual/research/material_only/doorway

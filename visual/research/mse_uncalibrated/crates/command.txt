@@ -1,0 +1,1 @@
+target/release/research --method mse --view crates --frames 4 --output visual/research/mse_uncalibrated/crates --gain 3
