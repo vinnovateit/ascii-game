@@ -6,8 +6,10 @@ use crate::{
     },
     render::{
         ascii::Ascii,
+        capture::{self, Metrics},
         framebuffer::Framebuffer,
         scene::{Mode, render},
+        style::{AsciiStyle, PARAMETERS, parameter},
         terminal::Terminal,
     },
     world::test_scene::test_scene,
@@ -26,6 +28,7 @@ pub struct Options {
     pub ascii: Ascii,
     pub snapshot: bool,
     pub capture: Option<std::path::PathBuf>,
+    pub preset: String,
     pub benchmark: usize,
     pub telemetry: bool,
     pub mode: Mode,
@@ -41,6 +44,7 @@ impl Default for Options {
             ascii: Ascii::default(),
             snapshot: false,
             capture: None,
+            preset: "pixatool".into(),
             benchmark: 0,
             telemetry: false,
             mode: Mode::Ascii,
@@ -52,6 +56,7 @@ impl Options {
     pub fn parse() -> Result<Option<Self>, String> {
         let mut o = Self::default();
         let mut args = std::env::args().skip(1);
+        let mut overrides = Vec::new();
         while let Some(arg) = args.next() {
             if arg == "--help" {
                 println!(
@@ -76,20 +81,10 @@ impl Options {
                         "--cell-aspect" => {
                             o.cell_ratio = value.parse().map_err(|_| "invalid cell aspect")?
                         }
-                        "--contrast" => {
-                            o.ascii.style.contrast =
-                                value.parse().map_err(|_| "invalid contrast")?
-                        }
-                        "--gamma" => {
-                            o.ascii.style.gamma = value.parse().map_err(|_| "invalid gamma")?
-                        }
-                        "--levels" => {
-                            o.ascii.style.posterization_levels =
-                                value.parse().map_err(|_| "invalid levels")?
-                        }
-                        "--dither" => {
-                            o.ascii.style.dither_strength =
-                                value.parse().map_err(|_| "invalid dither")?
+                        "--preset" => {
+                            o.ascii.style = AsciiStyle::preset(&value)
+                                .ok_or("preset must be neutral or pixatool")?;
+                            o.preset = value;
                         }
                         "--ramp" => o.ascii.set_ramp(&value)?,
                         "--view" | "--camera-preset" => o.view = value,
@@ -98,10 +93,26 @@ impl Options {
                             o.mode = mode(value.parse().map_err(|_| "invalid mode")?)
                                 .ok_or("mode must be 1..5")?
                         }
-                        _ => return Err(format!("unknown option {arg}")),
+                        _ => {
+                            let index = parameter(arg.trim_start_matches("--"))
+                                .ok_or_else(|| format!("unknown option {arg}"))?;
+                            overrides.push((
+                                index,
+                                value
+                                    .parse::<f32>()
+                                    .map_err(|_| format!("invalid value for {arg}"))?,
+                            ));
+                        }
                     }
                 }
             }
+        }
+        for (index, value) in overrides {
+            o.ascii.style.set(index, value)?;
+        }
+        o.ascii.style.validate()?;
+        if o.capture.is_some() && o.benchmark > 0 {
+            return Err("capture and benchmark must be separate runs".into());
         }
         if !(1..=500).contains(&o.width) || !(1..=240).contains(&o.height) {
             return Err("dimensions must be 1..500 by 1..240".into());
@@ -109,16 +120,10 @@ impl Options {
         for (name, value, low, high) in [
             ("fov", o.fov, 30., 120.),
             ("cell aspect", o.cell_ratio, 0.2, 2.),
-            ("gamma", o.ascii.style.gamma, 0.1, 4.),
-            ("contrast", o.ascii.style.contrast, 0.1, 4.),
-            ("dither", o.ascii.style.dither_strength, 0., 2.),
         ] {
             if !value.is_finite() || !(low..=high).contains(&value) {
                 return Err(format!("{name} must be {low}..{high}"));
             }
-        }
-        if !(4..=12).contains(&o.ascii.style.posterization_levels) {
-            return Err("levels must be 4..12".into());
         }
         if crate::viewpoints::camera(&o.view, o.fov.to_radians()).is_none() {
             return Err("view must be doorway, crates, stairs, room or landing".into());
@@ -143,6 +148,11 @@ pub fn run(mut options: Options) -> io::Result<()> {
         let mut fb = Framebuffer::new(options.width, options.height);
         let mut cells = vec![b' '; fb.width * fb.height];
         let start = Instant::now();
+        let render_mode = if options.capture.is_some() {
+            Mode::Ascii
+        } else {
+            options.mode
+        };
         let mut triangles = 0;
         let mut checksum = 0u64;
         for frame in 0..options.benchmark.max(1) {
@@ -154,12 +164,12 @@ pub fn run(mut options: Options) -> io::Result<()> {
                 &camera,
                 &mut fb,
                 options.cell_ratio,
-                options.mode,
+                render_mode,
             )
             .rasterized;
             options
                 .ascii
-                .convert(&fb, &mut cells, options.mode != Mode::Ascii);
+                .convert(&fb, &camera, &mut cells, render_mode != Mode::Ascii);
             checksum = std::hint::black_box(
                 cells
                     .iter()
@@ -179,7 +189,20 @@ pub fn run(mut options: Options) -> io::Result<()> {
             );
         }
         if let Some(path) = &options.capture {
-            crate::render::capture::save(path, &fb, &cells, &camera)?;
+            capture::save(path, &fb, &cells, &camera)?;
+            capture::pgm(
+                &path.join("edges.pgm"),
+                fb.width,
+                fb.height,
+                options.ascii.edge_values(),
+            )?;
+            std::fs::write(
+                path.join("style.txt"),
+                format!(
+                    "preset={}\ncell_aspect={}\n{:#?}\n",
+                    options.preset, options.cell_ratio, options.ascii.style
+                ),
+            )?;
         }
         if options.snapshot {
             for row in cells.chunks(fb.width) {
@@ -203,6 +226,8 @@ pub fn run(mut options: Options) -> io::Result<()> {
     let mut fb = Framebuffer::new(1, 1);
     let mut cells = vec![b' '; 1];
     let mut frame_ms = 16.67;
+    let mut tuning = false;
+    let mut selected = 0;
     'running: loop {
         let start = Instant::now();
         let elapsed = start.duration_since(last).as_secs_f32();
@@ -224,6 +249,41 @@ pub fn run(mut options: Options) -> io::Result<()> {
                         if let KeyCode::Char(c) = key.code {
                             if let Some(m) = c.to_digit(10).and_then(|n| mode(n as u8)) {
                                 options.mode = m;
+                            }
+                            if c == 'v' && key.kind == KeyEventKind::Press {
+                                tuning = !tuning;
+                                if tuning {
+                                    options.telemetry = true;
+                                }
+                            }
+                            if tuning {
+                                match c {
+                                    ',' => {
+                                        selected =
+                                            (selected + PARAMETERS.len() - 1) % PARAMETERS.len()
+                                    }
+                                    '.' => selected = (selected + 1) % PARAMETERS.len(),
+                                    '-' | '=' | '_' | '+' => options.ascii.style.adjust(
+                                        selected,
+                                        if c == '-' || c == '_' { -1. } else { 1. },
+                                        c == '_' || c == '+',
+                                    ),
+                                    'r' => {
+                                        options.ascii.style =
+                                            AsciiStyle::preset(&options.preset).unwrap()
+                                    }
+                                    'p' if key.kind == KeyEventKind::Press => {
+                                        options.preset = if options.preset == "pixatool" {
+                                            "neutral"
+                                        } else {
+                                            "pixatool"
+                                        }
+                                        .into();
+                                        options.ascii.style =
+                                            AsciiStyle::preset(&options.preset).unwrap();
+                                    }
+                                    _ => {}
+                                }
                             }
                             if c == 't' && key.kind == KeyEventKind::Press {
                                 options.telemetry = !options.telemetry;
@@ -285,7 +345,7 @@ pub fn run(mut options: Options) -> io::Result<()> {
         );
         options
             .ascii
-            .convert(&fb, &mut cells, options.mode != Mode::Ascii);
+            .convert(&fb, &camera, &mut cells, options.mode != Mode::Ascii);
         if options.telemetry {
             let line = format!(
                 "{:.0}fps {:.1}ms tri {}/{} fb {}x{} tty {}x{} xyz {:.1},{:.1},{:.1}",
@@ -301,6 +361,33 @@ pub fn run(mut options: Options) -> io::Result<()> {
                 camera.position.y,
                 camera.position.z
             );
+            let metrics = Metrics::measure(&fb, &cells, &camera);
+            if height > 1 {
+                let tuning_text = if tuning {
+                    format!(
+                        " {}={:.3}",
+                        PARAMETERS[selected].name,
+                        options.ascii.style.value(selected)
+                    )
+                } else {
+                    String::new()
+                };
+                let visual = format!(
+                    "{} occ {}/{} {:.1}% density {:.3} lum {:.3} depth {:.1}{}",
+                    options.preset,
+                    metrics.non_space,
+                    cells.len(),
+                    metrics.occupancy * 100.,
+                    metrics.density,
+                    metrics.luminance,
+                    metrics.depth,
+                    tuning_text
+                );
+                let row = &mut cells[(height - 2) * width..(height - 1) * width];
+                row.fill(b' ');
+                let n = visual.len().min(width);
+                row[..n].copy_from_slice(&visual.as_bytes()[..n]);
+            }
             let row = &mut cells[(height - 1) * width..];
             row.fill(b' ');
             let n = line.len().min(width);

@@ -1,46 +1,23 @@
-use super::framebuffer::Framebuffer;
-#[derive(Clone, Debug)]
-pub struct AsciiStyle {
-    pub exposure: f32,
-    pub gamma: f32,
-    pub contrast: f32,
-    pub black_point: f32,
-    pub white_point: f32,
-    pub background_cutoff: f32,
-    pub posterization_levels: usize,
-    pub dither_strength: f32,
-    pub texture_variance: f32,
-}
-impl Default for AsciiStyle {
-    fn default() -> Self {
-        Self {
-            exposure: 1.,
-            gamma: 0.9,
-            contrast: 1.5,
-            black_point: 0.16,
-            white_point: 0.9,
-            background_cutoff: 0.2,
-            posterization_levels: 6,
-            dither_strength: 0.15,
-            texture_variance: 0.2,
-        }
-    }
-}
+pub use super::style::AsciiStyle;
+use super::{capture::linear_depth, framebuffer::Framebuffer};
+use crate::engine::camera::Camera;
 pub struct Ascii {
     pub style: AsciiStyle,
     pub bands: Vec<Vec<u8>>,
+    intensity: Vec<f32>,
+    edges: Vec<Edge>,
 }
 impl Default for Ascii {
     fn default() -> Self {
         Self {
             style: AsciiStyle::default(),
+            intensity: Vec::new(),
+            edges: Vec::new(),
             bands: vec![
                 b" ".to_vec(),
                 b".'".to_vec(),
-                b":,".to_vec(),
-                b"!;".to_vec(),
-                b"=+".to_vec(),
-                b"Xx".to_vec(),
+                b":;".to_vec(),
+                b"xX".to_vec(),
                 b"#%".to_vec(),
                 b"MW@".to_vec(),
             ],
@@ -102,14 +79,89 @@ impl Ascii {
     pub fn glyph(&self, l: f32, x: usize, y: usize) -> u8 {
         self.mapped(self.tone(l), x, y, 1.)
     }
-    pub fn convert(&self, fb: &Framebuffer, cells: &mut [u8], plain: bool) {
-        for (i, (l, cell)) in fb.luminance.iter().zip(cells).enumerate() {
-            *cell = if plain {
-                b" .:-=+*#%@"[(l.clamp(0., 1.) * 9.).round() as usize]
+    pub fn convert(&mut self, fb: &Framebuffer, camera: &Camera, cells: &mut [u8], plain: bool) {
+        if plain {
+            for (l, cell) in fb.luminance.iter().zip(cells) {
+                *cell = b" .:-=+*#%@"[(l.clamp(0., 1.) * 9.).round() as usize];
+            }
+            return;
+        }
+        self.intensity.resize(fb.luminance.len(), 0.);
+        self.edges.resize(fb.luminance.len(), Edge::default());
+        for i in 0..self.intensity.len() {
+            let depth = linear_depth(fb.depth[i], camera);
+            self.intensity[i] = if depth.is_finite() {
+                self.tone(fb.luminance[i]) / (1. + (self.style.depth_falloff * depth).powf(1.3))
             } else {
-                self.glyph(*l, i % fb.width, i / fb.width)
+                0.
             };
         }
+        for y in 0..fb.height {
+            for x in 0..fb.width {
+                let i = y * fb.width + x;
+                let edge = gradient(&self.intensity, fb.width, fb.height, x, y);
+                self.edges[i] = edge;
+                let l = self.intensity[i];
+                // Flat surfaces only get a small fraction of the allowed texture;
+                // strong silhouette gradients suppress variants completely.
+                let variation = if edge.magnitude > self.style.edge_threshold {
+                    0.
+                } else {
+                    (0.3 + edge.magnitude * 6.).min(1.)
+                };
+                let mut glyph = self.mapped(l, x, y, variation);
+                if glyph != b' '
+                    && edge.magnitude * self.style.edge_weight > self.style.edge_threshold
+                {
+                    glyph = edge.glyph();
+                }
+                cells[i] = glyph;
+            }
+        }
+    }
+    pub fn edge_values(&self) -> impl Iterator<Item = f32> + '_ {
+        self.edges.iter().map(|e| e.magnitude)
+    }
+}
+#[derive(Clone, Copy, Default)]
+struct Edge {
+    gx: f32,
+    gy: f32,
+    magnitude: f32,
+}
+impl Edge {
+    fn glyph(self) -> u8 {
+        if self.gx.abs() > self.gy.abs() * 2. {
+            b'|'
+        } else if self.gy.abs() > self.gx.abs() * 2. {
+            b'='
+        } else if self.gx * self.gy > 0. {
+            b'/'
+        } else {
+            b'\\'
+        }
+    }
+}
+/// 3x3 Sobel gradient; clamped neighbors avoid spurious borders and handle 1x1.
+fn gradient(values: &[f32], width: usize, height: usize, x: usize, y: usize) -> Edge {
+    let left = x.saturating_sub(1);
+    let right = (x + 1).min(width - 1);
+    let top = y.saturating_sub(1);
+    let bottom = (y + 1).min(height - 1);
+    let a = values[top * width + left];
+    let b = values[top * width + x];
+    let c = values[top * width + right];
+    let d = values[y * width + left];
+    let f = values[y * width + right];
+    let g = values[bottom * width + left];
+    let h = values[bottom * width + x];
+    let i = values[bottom * width + right];
+    let gx = (c + 2. * f + i - a - 2. * d - g) * 0.25;
+    let gy = (g + 2. * h + i - a - 2. * b - c) * 0.25;
+    Edge {
+        gx,
+        gy,
+        magnitude: gx.hypot(gy).min(1.),
     }
 }
 #[cfg(test)]

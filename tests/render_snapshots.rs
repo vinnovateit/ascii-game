@@ -19,7 +19,7 @@ fn snapshot(camera: Camera) -> String {
         "closed room should cover viewport"
     );
     let mut cells = vec![b' '; 4800];
-    Ascii::default().convert(&fb, &mut cells, false);
+    Ascii::default().convert(&fb, &camera, &mut cells, false);
     cells
         .chunks(120)
         .map(|row| format!("{}\n", std::str::from_utf8(row).unwrap()))
