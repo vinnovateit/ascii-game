@@ -39,6 +39,8 @@ clears held inputs when reported by the terminal.
 ## Rendering options
 
 See [PURE_ASCII.md](PURE_ASCII.md) for current visuals, coverage-aware mapping and review frames.
+See [GLYPH_SETS.md](GLYPH_SETS.md) for the optional `--glyph-set hybrid` experiment,
+paired captures and terminal width verification. `--glyph-set ascii` remains the default.
 [VISUAL.md](VISUAL.md) retains the earlier tuning guide and historical comparisons.
 The default is the textured, coverage-aware, theme-native `pixatool` preset. V enables tuning;
 `,`/`.` select, `-`/`=` adjust finely, `_`/`+` adjust coarsely, R resets and P switches presets.
