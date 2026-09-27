@@ -5,7 +5,7 @@ use crossterm::{
         KeyboardEnhancementFlags, PopKeyboardEnhancementFlags, PushKeyboardEnhancementFlags,
     },
     execute, queue,
-    style::{Color, Print, ResetColor, SetBackgroundColor, SetForegroundColor},
+    style::{Print, ResetColor},
     terminal::{
         self, Clear, ClearType, DisableLineWrap, EnableLineWrap, EnterAlternateScreen,
         LeaveAlternateScreen,
@@ -47,8 +47,7 @@ impl Terminal {
             DisableLineWrap,
             EnableMouseCapture,
             EnableFocusChange,
-            SetForegroundColor(Color::White),
-            SetBackgroundColor(Color::Black)
+            ResetColor
         )?;
         terminal.key_releases = terminal::supports_keyboard_enhancement().unwrap_or(false);
         if terminal.key_releases {

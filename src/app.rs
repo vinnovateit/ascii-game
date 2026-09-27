@@ -77,14 +77,19 @@ impl Options {
                             o.cell_ratio = value.parse().map_err(|_| "invalid cell aspect")?
                         }
                         "--contrast" => {
-                            o.ascii.contrast = value.parse().map_err(|_| "invalid contrast")?
+                            o.ascii.style.contrast =
+                                value.parse().map_err(|_| "invalid contrast")?
                         }
-                        "--gamma" => o.ascii.gamma = value.parse().map_err(|_| "invalid gamma")?,
+                        "--gamma" => {
+                            o.ascii.style.gamma = value.parse().map_err(|_| "invalid gamma")?
+                        }
                         "--levels" => {
-                            o.ascii.levels = value.parse().map_err(|_| "invalid levels")?
+                            o.ascii.style.posterization_levels =
+                                value.parse().map_err(|_| "invalid levels")?
                         }
                         "--dither" => {
-                            o.ascii.dither = value.parse().map_err(|_| "invalid dither")?
+                            o.ascii.style.dither_strength =
+                                value.parse().map_err(|_| "invalid dither")?
                         }
                         "--ramp" => o.ascii.set_ramp(&value)?,
                         "--view" | "--camera-preset" => o.view = value,
@@ -104,16 +109,16 @@ impl Options {
         for (name, value, low, high) in [
             ("fov", o.fov, 30., 120.),
             ("cell aspect", o.cell_ratio, 0.2, 2.),
-            ("gamma", o.ascii.gamma, 0.1, 4.),
-            ("contrast", o.ascii.contrast, 0.1, 4.),
-            ("dither", o.ascii.dither, 0., 2.),
+            ("gamma", o.ascii.style.gamma, 0.1, 4.),
+            ("contrast", o.ascii.style.contrast, 0.1, 4.),
+            ("dither", o.ascii.style.dither_strength, 0., 2.),
         ] {
             if !value.is_finite() || !(low..=high).contains(&value) {
                 return Err(format!("{name} must be {low}..{high}"));
             }
         }
-        if !(2..=64).contains(&o.ascii.levels) {
-            return Err("levels must be 2..64".into());
+        if !(4..=12).contains(&o.ascii.style.posterization_levels) {
+            return Err("levels must be 4..12".into());
         }
         if crate::viewpoints::camera(&o.view, o.fov.to_radians()).is_none() {
             return Err("view must be doorway, crates, stairs, room or landing".into());
