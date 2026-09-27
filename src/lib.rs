@@ -5,6 +5,7 @@ pub mod app;
 pub mod engine;
 pub mod game_loop;
 pub mod render;
+pub mod research;
 pub mod state; // state.rs // game_loop.rs
 pub mod viewpoints;
 pub mod world;
