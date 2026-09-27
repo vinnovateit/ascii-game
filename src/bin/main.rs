@@ -1,11 +1,10 @@
-// code for static binary
-
-use ascii_game::game_loop::*;
-use ascii_game::state::*;
-
 fn main() {
-    let mut state = init_state();
+    let mut state = ascii_game::state::init_state();
     loop {
-        fmain(&mut state)
+        unsafe {
+            ascii_game::game_loop::fmain(&mut state);
+        }
+        println!("Counter: {}", state.counter);
+        std::thread::sleep(std::time::Duration::from_secs(1));
     }
 }
