@@ -1,6 +1,5 @@
 use crate::{
     engine::{
-        camera::Camera,
         collision::move_player,
         input::Input,
         time::{FixedClock, STEP},
@@ -26,6 +25,7 @@ pub struct Options {
     pub fov: f32,
     pub ascii: Ascii,
     pub snapshot: bool,
+    pub capture: Option<std::path::PathBuf>,
     pub benchmark: usize,
     pub telemetry: bool,
     pub mode: Mode,
@@ -40,6 +40,7 @@ impl Default for Options {
             fov: 70.,
             ascii: Ascii::default(),
             snapshot: false,
+            capture: None,
             benchmark: 0,
             telemetry: false,
             mode: Mode::Ascii,
@@ -86,7 +87,8 @@ impl Options {
                             o.ascii.dither = value.parse().map_err(|_| "invalid dither")?
                         }
                         "--ramp" => o.ascii.set_ramp(&value)?,
-                        "--view" => o.view = value,
+                        "--view" | "--camera-preset" => o.view = value,
+                        "--capture-frame" => o.capture = Some(value.into()),
                         "--mode" => {
                             o.mode = mode(value.parse().map_err(|_| "invalid mode")?)
                                 .ok_or("mode must be 1..5")?
@@ -113,8 +115,8 @@ impl Options {
         if !(2..=64).contains(&o.ascii.levels) {
             return Err("levels must be 2..64".into());
         }
-        if !["room", "stairs", "landing"].contains(&o.view.as_str()) {
-            return Err("view must be room, stairs or landing".into());
+        if crate::viewpoints::camera(&o.view, o.fov.to_radians()).is_none() {
+            return Err("view must be doorway, crates, stairs, room or landing".into());
         }
         Ok(Some(o))
     }
@@ -131,23 +133,8 @@ fn mode(n: u8) -> Option<Mode> {
 }
 pub fn run(mut options: Options) -> io::Result<()> {
     let world = test_scene();
-    let mut camera = Camera {
-        fov: options.fov.to_radians(),
-        ..Camera::default()
-    };
-    match options.view.as_str() {
-        "stairs" => {
-            camera.position = Vec3::new(0., 1.65, -8.);
-            camera.pitch = -0.12;
-        }
-        "landing" => {
-            camera.position = Vec3::new(0., 2.85, -15.5);
-            camera.yaw = std::f32::consts::PI;
-            camera.pitch = -0.2;
-        }
-        _ => {}
-    }
-    if options.snapshot || options.benchmark > 0 {
+    let mut camera = crate::viewpoints::camera(&options.view, options.fov.to_radians()).unwrap();
+    if options.snapshot || options.capture.is_some() || options.benchmark > 0 {
         let mut fb = Framebuffer::new(options.width, options.height);
         let mut cells = vec![b' '; fb.width * fb.height];
         let start = Instant::now();
@@ -185,6 +172,9 @@ pub fn run(mut options: Options) -> io::Result<()> {
                 triangles,
                 checksum
             );
+        }
+        if let Some(path) = &options.capture {
+            crate::render::capture::save(path, &fb, &cells, &camera)?;
         }
         if options.snapshot {
             for row in cells.chunks(fb.width) {
