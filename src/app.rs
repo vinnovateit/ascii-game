@@ -13,6 +13,7 @@ use crate::{
         style::{AsciiStyle, PARAMETERS, parameter},
         terminal::Terminal,
     },
+    research::backend::{Backend, Experimental},
     world::test_scene::test_scene,
 };
 use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers, MouseEventKind};
@@ -31,6 +32,9 @@ pub struct Options {
     pub capture: Option<std::path::PathBuf>,
     pub preset: String,
     pub glyph_set: GlyphSet,
+    pub backend: Backend,
+    pub match_samples: (usize, usize),
+    pub matched_atlas: Option<std::path::PathBuf>,
     pub benchmark: usize,
     pub telemetry: bool,
     pub mode: Mode,
@@ -48,6 +52,9 @@ impl Default for Options {
             capture: None,
             preset: "pixatool".into(),
             glyph_set: GlyphSet::Ascii,
+            backend: Backend::Fast,
+            match_samples: (3, 6),
+            matched_atlas: None,
             benchmark: 0,
             telemetry: false,
             mode: Mode::Ascii,
@@ -60,12 +67,15 @@ impl Options {
         let mut o = Self::default();
         let mut args = std::env::args().skip(1);
         let mut overrides = Vec::new();
+        let mut mapper_override = false;
         while let Some(arg) = args.next() {
             if arg == "--help" {
                 println!(
                     "ASCII 3D renderer
 WASD move; arrows/mouse look; Q/Esc exit; 1-5 debug; T telemetry
 V visual tuning; ,/. select; -/= fine; _/+ coarse; R reset; P preset
+--ascii-backend fast|matched|enriched (default fast; matched is experimental)
+--match-samples 2x4|3x6|4x8|6x10|8x16  --matched-atlas OPTIONAL_PGM
 --preset pixatool|neutral  --glyph-set ascii|hybrid  --camera-preset doorway|crates|stairs
 --capture-frame DIRECTORY (writes source buffers, canonical ASCII and resolved frame.txt)
 --snapshot  --benchmark FRAMES  --width N  --height N
@@ -95,12 +105,21 @@ Visual parameters:"
                             o.cell_ratio = value.parse().map_err(|_| "invalid cell aspect")?
                         }
                         "--preset" => {
+                            mapper_override = true;
                             o.ascii.style = AsciiStyle::preset(&value)
                                 .ok_or("preset must be neutral or pixatool")?;
                             o.preset = value;
                         }
                         "--glyph-set" => o.glyph_set = GlyphSet::parse(&value)?,
-                        "--ramp" => o.ascii.set_ramp(&value)?,
+                        "--ramp" => {
+                            mapper_override = true;
+                            o.ascii.set_ramp(&value)?;
+                        }
+                        "--ascii-backend" => o.backend = Backend::parse(&value)?,
+                        "--match-samples" => {
+                            o.match_samples = crate::research::backend::samples(&value)?
+                        }
+                        "--matched-atlas" => o.matched_atlas = Some(value.into()),
                         "--view" | "--camera-preset" => o.view = value,
                         "--capture-frame" => o.capture = Some(value.into()),
                         "--mode" => {
@@ -120,6 +139,13 @@ Visual parameters:"
                     }
                 }
             }
+        }
+        mapper_override |= !overrides.is_empty();
+        if o.backend == Backend::Matched && mapper_override {
+            return Err("preset/ramp/visual tuning apply to fast or enriched; matched uses its documented research settings".into());
+        }
+        if o.backend != Backend::Matched && o.matched_atlas.is_some() {
+            return Err("matched-atlas requires ascii-backend matched".into());
         }
         for (index, value) in overrides {
             o.ascii.style.set(index, value)?;
@@ -158,6 +184,16 @@ fn mode(n: u8) -> Option<Mode> {
 }
 pub fn run(mut options: Options) -> io::Result<()> {
     let world = test_scene();
+    let mut experimental = if options.backend != Backend::Fast {
+        Some(Experimental::new(
+            options.backend,
+            options.match_samples,
+            options.cell_ratio,
+            options.matched_atlas.as_deref(),
+        )?)
+    } else {
+        None
+    };
     let mut camera = crate::viewpoints::camera(&options.view, options.fov.to_radians()).unwrap();
     if options.snapshot || options.capture.is_some() || options.benchmark > 0 {
         let mut fb = Framebuffer::new(options.width, options.height);
@@ -175,17 +211,31 @@ pub fn run(mut options: Options) -> io::Result<()> {
             if options.benchmark > 0 {
                 camera.yaw = frame as f32 * 0.005;
             }
-            triangles = render(
-                &world.meshes,
-                &camera,
-                &mut fb,
-                options.cell_ratio,
-                render_mode,
-            )
-            .rasterized;
-            options
-                .ascii
-                .convert(&fb, &camera, &mut cells, render_mode != Mode::Ascii);
+            if render_mode == Mode::Ascii
+                && let Some(renderer) = &mut experimental
+            {
+                triangles = renderer
+                    .render(
+                        &world.meshes,
+                        &camera,
+                        &mut fb,
+                        &mut options.ascii,
+                        &mut cells,
+                    )
+                    .rasterized;
+            } else {
+                triangles = render(
+                    &world.meshes,
+                    &camera,
+                    &mut fb,
+                    options.cell_ratio,
+                    render_mode,
+                )
+                .rasterized;
+                options
+                    .ascii
+                    .convert(&fb, &camera, &mut cells, render_mode != Mode::Ascii);
+            }
             options
                 .glyph_set
                 .resolve_frame(&cells, fb.width, &mut display);
@@ -210,19 +260,29 @@ pub fn run(mut options: Options) -> io::Result<()> {
         if let Some(path) = &options.capture {
             capture::save(path, &fb, &cells, &camera)?;
             capture::save_glyphs(path, fb.width, fb.height, &display, options.glyph_set)?;
-            capture::pgm(
-                &path.join("edges.pgm"),
-                fb.width,
-                fb.height,
-                options.ascii.edge_values(),
-            )?;
-            std::fs::write(
-                path.join("style.txt"),
-                format!(
-                    "preset={}\ncell_aspect={}\nbands={:?}\n{:#?}\n",
-                    options.preset, options.cell_ratio, options.ascii.bands, options.ascii.style
-                ),
-            )?;
+            if options.backend != Backend::Matched {
+                capture::pgm(
+                    &path.join("edges.pgm"),
+                    fb.width,
+                    fb.height,
+                    options.ascii.edge_values(),
+                )?;
+            }
+            if let Some(renderer) = &experimental {
+                renderer.capture(path, &cells, fb.width)?;
+            }
+            if options.backend != Backend::Matched {
+                std::fs::write(
+                    path.join("style.txt"),
+                    format!(
+                        "preset={}\ncell_aspect={}\nbands={:?}\n{:#?}\n",
+                        options.preset,
+                        options.cell_ratio,
+                        options.ascii.bands,
+                        options.ascii.style
+                    ),
+                )?;
+            }
         }
         if options.snapshot {
             print!("{}", glyphs::text(&display, fb.width));
@@ -272,7 +332,10 @@ pub fn run(mut options: Options) -> io::Result<()> {
                             if let Some(m) = c.to_digit(10).and_then(|n| mode(n as u8)) {
                                 options.mode = m;
                             }
-                            if c == 'v' && key.kind == KeyEventKind::Press {
+                            if c == 'v'
+                                && key.kind == KeyEventKind::Press
+                                && options.backend != Backend::Matched
+                            {
                                 tuning = !tuning;
                                 if tuning {
                                     options.telemetry = true;
@@ -359,16 +422,32 @@ pub fn run(mut options: Options) -> io::Result<()> {
             cells.resize(width * height, b' ');
             display.resize(width * height, ' ');
         }
-        let stats = render(
-            &world.meshes,
-            &camera,
-            &mut fb,
-            options.cell_ratio,
-            options.mode,
-        );
-        options
-            .ascii
-            .convert(&fb, &camera, &mut cells, options.mode != Mode::Ascii);
+        let stats = if options.mode == Mode::Ascii
+            && let Some(renderer) = &mut experimental
+        {
+            renderer.render(
+                &world.meshes,
+                &camera,
+                &mut fb,
+                &mut options.ascii,
+                &mut cells,
+            )
+        } else {
+            if let Some(renderer) = &mut experimental {
+                renderer.matcher.reset();
+            }
+            let stats = render(
+                &world.meshes,
+                &camera,
+                &mut fb,
+                options.cell_ratio,
+                options.mode,
+            );
+            options
+                .ascii
+                .convert(&fb, &camera, &mut cells, options.mode != Mode::Ascii);
+            stats
+        };
         options.glyph_set.resolve_frame(&cells, width, &mut display);
         if options.telemetry {
             let line = format!(
@@ -398,7 +477,11 @@ pub fn run(mut options: Options) -> io::Result<()> {
                 };
                 let visual = format!(
                     "{}/{} occ {}/{} {:.1}% density {:.3} lum {:.3} depth {:.1}{}",
-                    options.preset,
+                    if options.backend == Backend::Fast {
+                        options.preset.as_str()
+                    } else {
+                        options.backend.name()
+                    },
                     options.glyph_set.name(),
                     metrics.non_space,
                     cells.len(),

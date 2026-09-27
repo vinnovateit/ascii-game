@@ -51,6 +51,7 @@ pub struct Matcher {
     previous: Vec<usize>,
     means: Vec<f32>,
     depths: Vec<f32>,
+    dimensions: (usize, usize),
 }
 impl Matcher {
     pub fn new(atlas: Atlas, settings: Settings) -> Self {
@@ -62,6 +63,7 @@ impl Matcher {
             previous: Vec::new(),
             means: Vec::new(),
             depths: Vec::new(),
+            dimensions: (0, 0),
         }
     }
     pub fn reset(&mut self) {
@@ -76,6 +78,10 @@ impl Matcher {
         let cols = fb.width / w;
         let rows = fb.height / h;
         assert_eq!(cols * rows, cells.len());
+        if self.dimensions != (cols, rows) {
+            self.reset();
+            self.dimensions = (cols, rows);
+        }
         if self.previous.len() != cells.len() {
             self.previous = vec![usize::MAX; cells.len()];
             self.means = vec![0.; cells.len()];
@@ -108,6 +114,8 @@ impl Matcher {
                 let f = Features::extract(p, w, h);
                 let mut candidates = [(f32::INFINITY, 0usize); 64];
                 let count = self.atlas.glyphs.len();
+                let bounded = self.settings.shortlist == 0
+                    && matches!(self.settings.method, Method::Normalized | Method::Gradient);
                 for (g, slot) in self
                     .atlas
                     .glyphs
@@ -116,7 +124,14 @@ impl Matcher {
                     .enumerate()
                 {
                     let (glyph, slot) = slot;
-                    *slot = (coarse(&f, &glyph.features, self.atlas.max_density), g);
+                    *slot = (
+                        if bounded {
+                            8. * ((f.mean - glyph.features.mean) / self.atlas.max_density).powi(2)
+                        } else {
+                            coarse(&f, &glyph.features, self.atlas.max_density)
+                        },
+                        g,
+                    );
                 }
                 let candidate_count = if self.settings.shortlist > 0 {
                     self.settings.shortlist.min(count)
@@ -127,8 +142,23 @@ impl Matcher {
                     candidates[..count]
                         .sort_unstable_by(|a, b| a.0.total_cmp(&b.0).then(a.1.cmp(&b.1)));
                 }
+                if bounded {
+                    let nearest = candidates[..count]
+                        .iter()
+                        .enumerate()
+                        .min_by(|a, b| a.1.0.total_cmp(&b.1.0))
+                        .unwrap()
+                        .0;
+                    candidates.swap(0, nearest);
+                }
                 let mut ranked = [(f32::INFINITY, 0usize, 1., 0.); 64];
-                for (slot, &(_, g)) in ranked.iter_mut().zip(&candidates[..candidate_count]) {
+                let mut evaluated = 0;
+                let mut best_score = f32::INFINITY;
+                for &(bound, g) in &candidates[..candidate_count] {
+                    if bounded && bound > best_score + self.settings.tolerance + 1e-6 {
+                        continue;
+                    }
+
                     let (mut score, alpha, beta) = score(
                         p,
                         &f,
@@ -142,11 +172,13 @@ impl Matcher {
                     {
                         score += self.settings.coherence;
                     }
-                    *slot = (score, g, alpha, beta);
+                    ranked[evaluated] = (score, g, alpha, beta);
+                    evaluated += 1;
+                    best_score = best_score.min(score);
                 }
-                ranked[..candidate_count]
+                ranked[..evaluated]
                     .sort_unstable_by(|a, b| a.0.total_cmp(&b.0).then(a.1.cmp(&b.1)));
-                let k = self.settings.top_k.min(candidate_count).max(1);
+                let k = self.settings.top_k.min(evaluated).max(1);
                 let near = ranked[..k]
                     .iter()
                     .take_while(|v| v.0 <= ranked[0].0 + self.settings.tolerance)
@@ -180,6 +212,30 @@ impl Matcher {
                 self.alphas[i] = best.2;
                 self.offsets[i] = best.3;
             }
+        }
+    }
+    /// Diagnostic only: fit foreground intensity without changing the selected glyphs.
+    pub fn fit_intensity(&mut self, fb: &Framebuffer, cells: &[u8]) {
+        let w = self.atlas.width;
+        let h = self.atlas.height;
+        let cols = fb.width / w;
+        assert_eq!(cells.len(), cols * (fb.height / h));
+        self.alphas.resize(cells.len(), 1.);
+        self.offsets.resize(cells.len(), 0.);
+        for (i, c) in cells.iter().enumerate() {
+            let g = self.atlas.glyphs.iter().find(|g| g.byte == *c).unwrap();
+            let mut dot = 0.;
+            let mut energy = 0.;
+            for y in 0..h {
+                for x in 0..w {
+                    let mask = g.mask[y * w + x];
+                    let p = fb.luminance[(i / cols * h + y) * fb.width + i % cols * w + x];
+                    dot += p * mask;
+                    energy += mask * mask;
+                }
+            }
+            self.alphas[i] = (dot / energy.max(1e-8)).clamp(0., 1.);
+            self.offsets[i] = 0.;
         }
     }
     pub fn reconstruct(&self, cells: &[u8], cols: usize, intensity: bool) -> Vec<f32> {
@@ -261,6 +317,60 @@ fn score(p: &[f32], f: &Features, g: &Glyph, method: Method, max: f32) -> (f32, 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn intensity_fit_preserves_glyph_and_recovers_scaled_mask() {
+        let atlas = Atlas::builtin(3, 6, false);
+        let glyph = atlas.glyphs.iter().find(|g| g.byte == b'X').unwrap();
+        let mut fb = Framebuffer::new(3, 6);
+        fb.luminance = glyph.mask.iter().map(|v| v * 0.4).collect();
+        let mut matcher = Matcher::new(atlas, Settings::default());
+        let cells = *b"X";
+        matcher.fit_intensity(&fb, &cells);
+        assert_eq!(cells, *b"X");
+        assert!((matcher.alphas[0] - 0.4).abs() < 1e-6);
+        assert_eq!(matcher.offsets, [0.]);
+        let reconstruction = matcher.reconstruct(&cells, 1, true);
+        assert!(
+            reconstruction
+                .iter()
+                .zip(fb.luminance)
+                .all(|(a, b)| (a - b).abs() < 1e-6)
+        );
+    }
+    #[test]
+    fn density_bound_preserves_full_search_winner_and_top_k() {
+        let mut fb = Framebuffer::new(6 * 64, 10);
+        fb.depth.fill(0.9);
+        for (i, l) in fb.luminance.iter_mut().enumerate() {
+            *l = (crate::render::ascii::hash(i % 384, i / 384) & 65535) as f32 / 65535. * 0.4;
+        }
+        for method in [Method::Normalized, Method::Gradient] {
+            for top_k in [1, 3] {
+                let mut bounded = Matcher::new(
+                    Atlas::builtin(6, 10, false),
+                    Settings {
+                        method,
+                        top_k,
+                        ..Settings::default()
+                    },
+                );
+                let mut full = Matcher::new(
+                    Atlas::builtin(6, 10, false),
+                    Settings {
+                        method,
+                        top_k,
+                        shortlist: 64,
+                        ..Settings::default()
+                    },
+                );
+                let mut a = vec![b' '; 64];
+                let mut b = a.clone();
+                bounded.convert(&fb, &mut a);
+                full.convert(&fb, &mut b);
+                assert_eq!(a, b);
+            }
+        }
+    }
     #[test]
     fn exact_template_is_recovered_by_mse() {
         let atlas = Atlas::builtin(6, 10, false);

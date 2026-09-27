@@ -9,6 +9,7 @@ use ascii_game::{
     research::{
         atlas::Atlas,
         matcher::{Matcher, Method, Settings},
+        source::{SourcePass, SourceSettings},
     },
     viewpoints,
     world::test_scene::test_scene,
@@ -31,13 +32,17 @@ fn main() -> io::Result<()> {
     let mut motion = "static".to_string();
     let mut compact = false;
     let mut sequence = false;
+    let mut emit_intensity = false;
     let mut ratio = 0.5;
     let mut gain = 1.;
+    let mut source_settings = SourceSettings::default();
+    let mut black = 0.08;
+    let mut white = 0.8;
     let mut args = std::env::args().skip(1);
     while let Some(key) = args.next() {
         if key == "--help" {
             println!(
-                "research --method fast|mse|normalized|gradient|feature|scaled|offset --view doorway|crates|stairs --output DIR\n--width N --height N --sample-width N --sample-height N --atlas FILE --compact 0|1\n--frames N --motion static|yaw|forward|strafe|stairs --sequence 0|1\n--shortlist N --top-k N --tolerance F --hysteresis F --coherence F --gain F --cell-aspect F"
+                "research --method fast|fast-source|mse|normalized|gradient|feature|scaled|offset --view doorway|crates|stairs|silhouette --output DIR\n--width N --height N --sample-width N --sample-height N --atlas FILE --compact 0|1\n--frames N --motion static|yaw|forward|strafe|stairs --sequence 0|1\n--shortlist N --top-k N --tolerance F --hysteresis F --coherence F --gain F --cell-aspect F\n--noise F --lighting 0|1 --contact F --context F --edge-boost F --black F --white F\n--emit-intensity 0|1 (scaled or gradient; captures only)"
             );
             return Ok(());
         }
@@ -59,6 +64,7 @@ fn main() -> io::Result<()> {
             "--frames" => frames = integer()?,
             "--motion" => motion = v,
             "--sequence" => sequence = integer()? != 0,
+            "--emit-intensity" => emit_intensity = integer()? != 0,
             "--compact" => compact = integer()? != 0,
             "--shortlist" => settings.shortlist = integer()?,
             "--top-k" => settings.top_k = integer()?,
@@ -66,6 +72,13 @@ fn main() -> io::Result<()> {
             "--hysteresis" => settings.hysteresis = number()?,
             "--coherence" => settings.coherence = number()?,
             "--gain" => gain = number()?,
+            "--noise" => source_settings.noise = number()?,
+            "--contact" => source_settings.contact = number()?,
+            "--lighting" => source_settings.lighting = integer()? != 0,
+            "--context" => source_settings.context = number()?,
+            "--edge-boost" => source_settings.edge_boost = number()?,
+            "--black" => black = number()?,
+            "--white" => white = number()?,
             "--cell-aspect" => ratio = number()?,
             _ => return Err(err(format!("unknown {key}"))),
         }
@@ -95,8 +108,16 @@ fn main() -> io::Result<()> {
     {
         return Err(err("invalid numeric option"));
     }
-    let mut camera =
-        viewpoints::camera(&view, 70f32.to_radians()).ok_or_else(|| err("invalid view"))?;
+    let mut camera = if view == "silhouette" {
+        ascii_game::engine::camera::Camera {
+            position: glam::Vec3::new(-14., 7., 16.),
+            yaw: 0.719,
+            pitch: -0.24,
+            ..Default::default()
+        }
+    } else {
+        viewpoints::camera(&view, 70f32.to_radians()).ok_or_else(|| err("invalid view"))?
+    };
     let origin = camera.position;
     let yaw = camera.yaw;
     let atlas = if let Some(p) = atlas_path {
@@ -105,10 +126,25 @@ fn main() -> io::Result<()> {
         Atlas::builtin(sw, sh, compact)
     };
     let scale = atlas.max_density;
-    if method != "fast" {
+    if method != "fast" && method != "fast-source" {
         settings.method = Method::parse(&method).ok_or_else(|| err("invalid method"))?;
     }
     let mut matcher = Matcher::new(atlas, settings);
+    let mut source_pass = SourcePass::default();
+    if !black.is_finite()
+        || !white.is_finite()
+        || white <= black
+        || ![
+            source_settings.noise,
+            source_settings.contact,
+            source_settings.context,
+            source_settings.edge_boost,
+        ]
+        .iter()
+        .all(|x| x.is_finite() && (0.0..=2.0).contains(x))
+    {
+        return Err(err("invalid source parameters"));
+    }
     let world = test_scene();
     let mut source = Framebuffer::new(width * sw, height * sh);
     let mut low = Framebuffer::new(width, height);
@@ -116,8 +152,15 @@ fn main() -> io::Result<()> {
     let mut cells = vec![b' '; width * height];
     let mut previous = cells.clone();
     let (mut render_ms, mut convert_ms, mut changes, mut visible) = (0., 0., 0usize, 0usize);
+    let mut source_ms = 0.;
     fs::create_dir_all(&path)?;
+    fs::write(
+        path.join("command.txt"),
+        std::env::args().collect::<Vec<_>>().join(" ") + "\n",
+    )?;
     matcher.atlas.save(&path.join("atlas.pgm"))?;
+    let mut stair_position = glam::Vec3::new(0., 1.65, -9.6);
+    let mut stair_velocity = 0.;
     for frame in 0..frames {
         camera.position = origin;
         camera.yaw = yaw;
@@ -126,10 +169,25 @@ fn main() -> io::Result<()> {
             "static" => {}
             "yaw" => camera.yaw += t * 0.12,
             "forward" => camera.position += camera.forward() * t * 0.6,
-            "strafe" => camera.position.x += t * 0.6,
+            "strafe" => {
+                camera.position = glam::Vec3::new(-0.6 + t * 0.6, 1.65, -5.8);
+                camera.yaw = 0.;
+            }
             "stairs" => {
-                camera.position.z -= t * 0.6;
-                camera.position.y += t * 0.12;
+                if frame > 0 {
+                    for _ in 0..2 {
+                        ascii_game::engine::collision::move_player(
+                            &mut stair_position,
+                            &mut stair_velocity,
+                            glam::Vec3::new(0., 0., -1.2 / 120.),
+                            1. / 120.,
+                            &world.solids,
+                        );
+                    }
+                }
+                camera.position = stair_position;
+                camera.yaw = 0.;
+                camera.pitch = -0.12;
             }
             _ => return Err(err("invalid motion")),
         }
@@ -150,12 +208,44 @@ fn main() -> io::Result<()> {
         if method == "fast" {
             fast.convert(&low, &camera, &mut cells, false);
         } else {
-            for l in &mut source.luminance {
-                *l = ((*l - 0.08) / 0.72).clamp(0., 1.) * scale * gain;
+            source_pass.apply(
+                &mut source,
+                &camera,
+                ratio * sh as f32 / sw as f32,
+                source_settings,
+            );
+            if method == "fast-source" {
+                for cy in 0..height {
+                    for cx in 0..width {
+                        let mut sum = 0.;
+                        let mut depth = f32::INFINITY;
+                        for y in 0..sh {
+                            for x in 0..sw {
+                                let j = (cy * sh + y) * source.width + cx * sw + x;
+                                sum += source.luminance[j];
+                                depth = depth.min(source.depth[j]);
+                            }
+                        }
+                        low.luminance[cy * width + cx] = sum / (sw * sh) as f32;
+                        low.depth[cy * width + cx] = depth;
+                    }
+                }
             }
-            matcher.convert(&source, &mut cells);
+            for l in &mut source.luminance {
+                *l = ((*l - black) / (white - black)).clamp(0., 1.) * scale * gain;
+            }
+            source_ms += start.elapsed().as_secs_f64() * 1000.;
+            let matching = Instant::now();
+            if method == "fast-source" {
+                fast.convert(&low, &camera, &mut cells, false);
+            } else {
+                matcher.convert(&source, &mut cells);
+            }
+            convert_ms += matching.elapsed().as_secs_f64() * 1000.;
         }
-        convert_ms += start.elapsed().as_secs_f64() * 1000.;
+        if method == "fast" {
+            convert_ms += start.elapsed().as_secs_f64() * 1000.;
+        }
         if frame > 0 {
             for (&a, &b) in previous.iter().zip(&cells) {
                 if a != b {
@@ -186,9 +276,21 @@ fn main() -> io::Result<()> {
         raw.height,
         raw.luminance.iter().copied(),
     )?;
+    source_pass.apply(
+        &mut raw,
+        &camera,
+        ratio * sh as f32 / sw as f32,
+        source_settings,
+    );
+    capture::pgm(
+        &path.join("enriched.pgm"),
+        raw.width,
+        raw.height,
+        raw.luminance.iter().copied(),
+    )?;
     if method == "fast" {
         for (l, r) in source.luminance.iter_mut().zip(&raw.luminance) {
-            *l = ((*r - 0.08) / 0.72).clamp(0., 1.) * scale * gain;
+            *l = ((*r - black) / (white - black)).clamp(0., 1.) * scale * gain;
         }
     }
     capture::pgm(
@@ -246,13 +348,20 @@ fn main() -> io::Result<()> {
         .sum::<f32>()
         / n;
     let mut stats = format!(
-        "method={method}\nview={view}\nwidth={width}\nheight={height}\nsampling={sw}x{sh}\nframes={frames}\nmotion={motion}\nrender_ms={:.5}\nconvert_ms={:.5}\ncpu_ms={:.5}\noccupancy={occupancy:.6}\nentropy={entropy:.6}\natlas_density={density:.6}\nmse={mse:.6}\nmae={mae:.6}\ngradient_mae={gradient:.6}\nglyph_change_rate={:.6}\n",
+        "method={method}\nsource={source_settings:?}\nblack={black}\nwhite={white}\ngain={gain}\nshortlist={}\ntop_k={}\nhysteresis={}\nview={view}\nwidth={width}\nheight={height}\nsampling={sw}x{sh}\nframes={frames}\nmotion={motion}\nrender_ms={:.5}\nsource_ms={:.5}\nconvert_ms={:.5}\ncpu_ms={:.5}\noccupancy={occupancy:.6}\nentropy={entropy:.6}\natlas_density={density:.6}\nmse={mse:.6}\nmae={mae:.6}\ngradient_mae={gradient:.6}\nglyph_change_rate={:.6}\n",
+        matcher.settings.shortlist,
+        matcher.settings.top_k,
+        matcher.settings.hysteresis,
         render_ms / frames as f64,
+        source_ms / frames as f64,
         convert_ms / frames as f64,
-        (render_ms + convert_ms) / frames as f64,
+        (render_ms + source_ms + convert_ms) / frames as f64,
         changes as f64 / visible.max(1) as f64
     );
-    if method == "scaled" || method == "offset" {
+    if emit_intensity && method == "gradient" {
+        matcher.fit_intensity(&source, &cells);
+    }
+    if method == "scaled" || method == "offset" || (emit_intensity && method == "gradient") {
         let r = matcher.reconstruct(&cells, width, true);
         capture::pgm(
             &path.join("intensity-reconstruction.pgm"),
@@ -260,6 +369,42 @@ fn main() -> io::Result<()> {
             source.height,
             r.iter().copied(),
         )?;
+        if emit_intensity && (method == "scaled" || method == "gradient") {
+            let mut ansi = String::new();
+            let mut dim = String::new();
+            let mut last = None;
+            let mut last_dim = None;
+            for (i, &c) in cells.iter().enumerate() {
+                let v = (matcher.alphas[i] * 255.).round() as u8;
+                if last != Some(v) {
+                    ansi += &format!("\x1b[38;2;{v};{v};{v}m");
+                    last = Some(v);
+                }
+                let d = matcher.alphas[i] < 0.5;
+                if last_dim != Some(d) {
+                    dim += if d { "\x1b[2m" } else { "\x1b[22m" };
+                    last_dim = Some(d);
+                }
+                ansi.push(c as char);
+                dim.push(c as char);
+                if (i + 1) % width == 0 {
+                    ansi.push('\n');
+                    dim.push('\n');
+                }
+            }
+            ansi += "\x1b[39m";
+            dim += "\x1b[22m";
+            fs::write(path.join("grayscale.ansi"), ansi)?;
+            fs::write(path.join("dim.ansi"), dim)?;
+            fs::write(
+                path.join("alphas.txt"),
+                matcher
+                    .alphas
+                    .iter()
+                    .map(|a| format!("{a:.5}\n"))
+                    .collect::<String>(),
+            )?;
+        }
         let (m, a, g) = errors(&source.luminance, &r, source.width);
         stats +=
             &format!("intensity_mse={m:.6}\nintensity_mae={a:.6}\nintensity_gradient_mae={g:.6}\n");
