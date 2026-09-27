@@ -118,3 +118,52 @@ pub fn save(path: &Path, fb: &Framebuffer, cells: &[u8], camera: &Camera) -> io:
         ),
     )
 }
+
+/// Append the resolved vocabulary without replacing canonical ASCII/source captures.
+pub fn save_glyphs(
+    path: &Path,
+    width: usize,
+    height: usize,
+    cells: &[char],
+    set: super::glyphs::GlyphSet,
+) -> io::Result<()> {
+    let frame = super::glyphs::text(cells, width);
+    fs::write(path.join("frame.txt"), &frame)?;
+    pgm(
+        &path.join("glyph-density.pgm"),
+        width,
+        height,
+        cells.iter().map(|c| glyph_density(*c)),
+    )?;
+    let non_space = cells.iter().filter(|c| **c != ' ').count();
+    let unicode = cells.iter().filter(|c| !c.is_ascii()).count();
+    let blocks = cells
+        .iter()
+        .filter(|c| matches!(c, '░' | '▒' | '▓' | '█'))
+        .count();
+    fs::write(
+        path.join("glyphs.txt"),
+        format!(
+            "glyph_set={}\nwidth={}\nheight={}\nnon_space={}\nnon_space_percent={:.3}\nunicode_cells={}\nblock_cells={}\nutf8_bytes={}\nmean_glyph_density={:.5}\n",
+            set.name(),
+            width,
+            height,
+            non_space,
+            100. * non_space as f32 / cells.len() as f32,
+            unicode,
+            blocks,
+            frame.len(),
+            cells.iter().map(|c| glyph_density(*c)).sum::<f32>() / cells.len() as f32
+        ),
+    )
+}
+pub fn glyph_density(c: char) -> f32 {
+    match c {
+        '░' => 0.25,
+        '▒' => 0.5,
+        '▓' => 0.75,
+        '█' => 1.,
+        '─' | '│' | '╱' | '╲' => 0.32,
+        _ => density(c as u8),
+    }
+}

@@ -20,7 +20,7 @@ static KEYS: AtomicBool = AtomicBool::new(false);
 pub struct Terminal {
     pub key_releases: bool,
     out: Stdout,
-    previous: Vec<u8>,
+    previous: Vec<char>,
     width: usize,
     output: Vec<u8>,
 }
@@ -62,13 +62,37 @@ impl Terminal {
         }
         Ok(terminal)
     }
-    pub fn present(&mut self, cells: &[u8], width: usize) -> io::Result<()> {
+    /// Verify actual terminal cursor advance: Unicode width tables alone cannot
+    /// determine an emulator's ambiguous-width policy or font configuration.
+    pub fn verify_hybrid_widths(&mut self) -> io::Result<()> {
+        if terminal::size()?.0 < 2 {
+            return Err(io::Error::other(
+                "hybrid width verification needs at least two columns; use --glyph-set ascii",
+            ));
+        }
+        for glyph in super::glyphs::HYBRID_GLYPHS {
+            execute!(self.out, MoveTo(0, 0), Print(glyph))?;
+            let position = crossterm::cursor::position().map_err(|e| {
+                io::Error::other(format!(
+                    "cannot verify hybrid glyph widths ({e}); use --glyph-set ascii"
+                ))
+            })?;
+            if position != (1, 0) {
+                return Err(io::Error::other(format!(
+                    "glyph {glyph:?} did not advance exactly one column ({position:?}); use --glyph-set ascii"
+                )));
+            }
+        }
+        execute!(self.out, MoveTo(0, 0), Clear(ClearType::All))?;
+        Ok(())
+    }
+    pub fn present(&mut self, cells: &[char], width: usize) -> io::Result<()> {
         if width == 0 {
             return Ok(());
         }
         self.output.clear();
         if self.previous.len() != cells.len() || self.width != width {
-            self.previous = vec![0; cells.len()];
+            self.previous = vec!['\0'; cells.len()];
             self.width = width;
             queue!(self.output, Clear(ClearType::All))?;
         }
@@ -78,16 +102,19 @@ impl Terminal {
                 continue;
             };
             let last = row.iter().zip(old).rposition(|(a, b)| a != b).unwrap();
-            queue!(
-                self.output,
-                MoveTo(first as u16, y as u16),
-                Print(std::str::from_utf8(&row[first..=last]).map_err(io::Error::other)?)
-            )?;
+            queue!(self.output, MoveTo(first as u16, y as u16))?;
+            encode_span(&mut self.output, &row[first..=last]);
         }
         self.out.write_all(&self.output)?;
         self.out.flush()?;
         self.previous.copy_from_slice(cells);
         Ok(())
+    }
+}
+fn encode_span(output: &mut Vec<u8>, cells: &[char]) {
+    let mut encoded = [0u8; 4];
+    for c in cells {
+        output.extend_from_slice(c.encode_utf8(&mut encoded).as_bytes());
     }
 }
 fn restore() {
@@ -112,5 +139,15 @@ fn restore() {
 impl Drop for Terminal {
     fn drop(&mut self) {
         restore();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn changed_span_is_valid_utf8() {
+        let mut bytes = Vec::new();
+        super::encode_span(&mut bytes, &['a', '│', '▒', '╲']);
+        assert_eq!(std::str::from_utf8(&bytes).unwrap(), "a│▒╲");
     }
 }

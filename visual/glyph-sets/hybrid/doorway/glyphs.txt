@@ -1,0 +1,9 @@
+glyph_set=hybrid
+width=120
+height=40
+non_space=3585
+non_space_percent=74.688
+unicode_cells=618
+block_cells=40
+utf8_bytes=6076
+mean_glyph_density=0.30664

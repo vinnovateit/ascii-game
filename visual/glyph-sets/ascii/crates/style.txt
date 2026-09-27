@@ -1,0 +1,17 @@
+preset=pixatool
+cell_aspect=0.5
+bands=[[32], [46, 44, 39, 96], [58, 59, 45], [61, 43, 126], [120, 42, 88], [35, 37, 38], [77, 87, 64]]
+AsciiStyle {
+    exposure: 1.05,
+    gamma: 0.95,
+    contrast: 1.4,
+    black_point: 0.09,
+    white_point: 0.9,
+    shadow_threshold: 0.18,
+    posterization_levels: 10,
+    dither_strength: 0.3,
+    texture_variance: 0.9,
+    depth_falloff: 0.025,
+    edge_weight: 0.5,
+    edge_threshold: 0.12,
+}

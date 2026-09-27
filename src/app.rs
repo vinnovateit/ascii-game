@@ -8,6 +8,7 @@ use crate::{
         ascii::Ascii,
         capture::{self, Metrics},
         framebuffer::Framebuffer,
+        glyphs::{self, GlyphSet},
         scene::{Mode, render},
         style::{AsciiStyle, PARAMETERS, parameter},
         terminal::Terminal,
@@ -29,6 +30,7 @@ pub struct Options {
     pub snapshot: bool,
     pub capture: Option<std::path::PathBuf>,
     pub preset: String,
+    pub glyph_set: GlyphSet,
     pub benchmark: usize,
     pub telemetry: bool,
     pub mode: Mode,
@@ -45,6 +47,7 @@ impl Default for Options {
             snapshot: false,
             capture: None,
             preset: "pixatool".into(),
+            glyph_set: GlyphSet::Ascii,
             benchmark: 0,
             telemetry: false,
             mode: Mode::Ascii,
@@ -63,8 +66,8 @@ impl Options {
                     "ASCII 3D renderer
 WASD move; arrows/mouse look; Q/Esc exit; 1-5 debug; T telemetry
 V visual tuning; ,/. select; -/= fine; _/+ coarse; R reset; P preset
---preset pixatool|neutral  --camera-preset doorway|crates|stairs
---capture-frame DIRECTORY (writes raw luminance, depth, edges, density and ASCII)
+--preset pixatool|neutral  --glyph-set ascii|hybrid  --camera-preset doorway|crates|stairs
+--capture-frame DIRECTORY (writes source buffers, canonical ASCII and resolved frame.txt)
 --snapshot  --benchmark FRAMES  --width N  --height N
 --fov DEGREES  --cell-aspect RATIO  --ramp ' .:#@'  --telemetry  --mode 1..5
 Visual parameters:"
@@ -96,6 +99,7 @@ Visual parameters:"
                                 .ok_or("preset must be neutral or pixatool")?;
                             o.preset = value;
                         }
+                        "--glyph-set" => o.glyph_set = GlyphSet::parse(&value)?,
                         "--ramp" => o.ascii.set_ramp(&value)?,
                         "--view" | "--camera-preset" => o.view = value,
                         "--capture-frame" => o.capture = Some(value.into()),
@@ -121,6 +125,7 @@ Visual parameters:"
             o.ascii.style.set(index, value)?;
         }
         o.ascii.style.validate()?;
+        o.glyph_set.validate()?;
         if o.capture.is_some() && o.benchmark > 0 {
             return Err("capture and benchmark must be separate runs".into());
         }
@@ -157,6 +162,7 @@ pub fn run(mut options: Options) -> io::Result<()> {
     if options.snapshot || options.capture.is_some() || options.benchmark > 0 {
         let mut fb = Framebuffer::new(options.width, options.height);
         let mut cells = vec![b' '; fb.width * fb.height];
+        let mut display = vec![' '; cells.len()];
         let start = Instant::now();
         let render_mode = if options.capture.is_some() {
             Mode::Ascii
@@ -180,8 +186,11 @@ pub fn run(mut options: Options) -> io::Result<()> {
             options
                 .ascii
                 .convert(&fb, &camera, &mut cells, render_mode != Mode::Ascii);
+            options
+                .glyph_set
+                .resolve_frame(&cells, fb.width, &mut display);
             checksum = std::hint::black_box(
-                cells
+                display
                     .iter()
                     .fold(0u64, |h, c| h.wrapping_mul(31).wrapping_add(*c as u64)),
             );
@@ -200,6 +209,7 @@ pub fn run(mut options: Options) -> io::Result<()> {
         }
         if let Some(path) = &options.capture {
             capture::save(path, &fb, &cells, &camera)?;
+            capture::save_glyphs(path, fb.width, fb.height, &display, options.glyph_set)?;
             capture::pgm(
                 &path.join("edges.pgm"),
                 fb.width,
@@ -215,9 +225,7 @@ pub fn run(mut options: Options) -> io::Result<()> {
             )?;
         }
         if options.snapshot {
-            for row in cells.chunks(fb.width) {
-                println!("{}", std::str::from_utf8(row).unwrap());
-            }
+            print!("{}", glyphs::text(&display, fb.width));
         }
         return Ok(());
     }
@@ -227,6 +235,9 @@ pub fn run(mut options: Options) -> io::Result<()> {
         ));
     }
     let mut terminal = Terminal::enter()?;
+    if options.glyph_set == GlyphSet::Hybrid {
+        terminal.verify_hybrid_widths()?;
+    }
     let mut input = Input::default();
     input.releases = terminal.key_releases;
     let mut clock = FixedClock::default();
@@ -235,6 +246,7 @@ pub fn run(mut options: Options) -> io::Result<()> {
     let mut mouse = None;
     let mut fb = Framebuffer::new(1, 1);
     let mut cells = vec![b' '; 1];
+    let mut display = vec![' '; 1];
     let mut frame_ms = 16.67;
     let mut tuning = false;
     let mut selected = 0;
@@ -345,6 +357,7 @@ pub fn run(mut options: Options) -> io::Result<()> {
         if fb.width != width || fb.height != height {
             fb = Framebuffer::new(width, height);
             cells.resize(width * height, b' ');
+            display.resize(width * height, ' ');
         }
         let stats = render(
             &world.meshes,
@@ -356,6 +369,7 @@ pub fn run(mut options: Options) -> io::Result<()> {
         options
             .ascii
             .convert(&fb, &camera, &mut cells, options.mode != Mode::Ascii);
+        options.glyph_set.resolve_frame(&cells, width, &mut display);
         if options.telemetry {
             let line = format!(
                 "{:.0}fps {:.1}ms tri {}/{} fb {}x{} tty {}x{} xyz {:.1},{:.1},{:.1}",
@@ -383,8 +397,9 @@ pub fn run(mut options: Options) -> io::Result<()> {
                     String::new()
                 };
                 let visual = format!(
-                    "{} occ {}/{} {:.1}% density {:.3} lum {:.3} depth {:.1}{}",
+                    "{}/{} occ {}/{} {:.1}% density {:.3} lum {:.3} depth {:.1}{}",
                     options.preset,
+                    options.glyph_set.name(),
                     metrics.non_space,
                     cells.len(),
                     metrics.occupancy * 100.,
@@ -393,17 +408,21 @@ pub fn run(mut options: Options) -> io::Result<()> {
                     metrics.depth,
                     tuning_text
                 );
-                let row = &mut cells[(height - 2) * width..(height - 1) * width];
-                row.fill(b' ');
+                let row = &mut display[(height - 2) * width..(height - 1) * width];
+                row.fill(' ');
                 let n = visual.len().min(width);
-                row[..n].copy_from_slice(&visual.as_bytes()[..n]);
+                for (cell, c) in row[..n].iter_mut().zip(visual.chars()) {
+                    *cell = c;
+                }
             }
-            let row = &mut cells[(height - 1) * width..];
-            row.fill(b' ');
+            let row = &mut display[(height - 1) * width..];
+            row.fill(' ');
             let n = line.len().min(width);
-            row[..n].copy_from_slice(&line.as_bytes()[..n]);
+            for (cell, c) in row[..n].iter_mut().zip(line.chars()) {
+                *cell = c;
+            }
         }
-        terminal.present(&cells, width)?;
+        terminal.present(&display, width)?;
         std::thread::sleep(Duration::from_secs_f64(1. / 60.).saturating_sub(start.elapsed()));
         frame_ms = frame_ms * 0.9 + start.elapsed().as_secs_f32() * 1000. * 0.1;
     }

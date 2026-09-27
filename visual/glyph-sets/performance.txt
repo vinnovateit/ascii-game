@@ -1,0 +1,13 @@
+Release benchmark: identical doorway camera, 3000 frames, three alternating trials; includes rendering, canonical postprocess and glyph resolution, excludes terminal presentation.
+120x40 trial=1 glyphs=ascii: 3000 frames, 120x40, 0.694 ms/frame, 1440.7 FPS CPU-only, 14 rasterized triangles (last frame), checksum 5138160ccfb9e524
+120x40 trial=1 glyphs=hybrid: 3000 frames, 120x40, 0.755 ms/frame, 1325.2 FPS CPU-only, 14 rasterized triangles (last frame), checksum 50dcf3b9ee89f626
+120x40 trial=2 glyphs=ascii: 3000 frames, 120x40, 0.718 ms/frame, 1393.4 FPS CPU-only, 14 rasterized triangles (last frame), checksum 5138160ccfb9e524
+120x40 trial=2 glyphs=hybrid: 3000 frames, 120x40, 0.768 ms/frame, 1302.8 FPS CPU-only, 14 rasterized triangles (last frame), checksum 50dcf3b9ee89f626
+120x40 trial=3 glyphs=ascii: 3000 frames, 120x40, 0.728 ms/frame, 1374.4 FPS CPU-only, 14 rasterized triangles (last frame), checksum 5138160ccfb9e524
+120x40 trial=3 glyphs=hybrid: 3000 frames, 120x40, 0.760 ms/frame, 1315.7 FPS CPU-only, 14 rasterized triangles (last frame), checksum 50dcf3b9ee89f626
+200x60 trial=1 glyphs=ascii: 3000 frames, 200x60, 1.793 ms/frame, 557.7 FPS CPU-only, 15 rasterized triangles (last frame), checksum f9c8844b74a4ff6f
+200x60 trial=1 glyphs=hybrid: 3000 frames, 200x60, 1.812 ms/frame, 551.8 FPS CPU-only, 15 rasterized triangles (last frame), checksum 773b269fa2dabc80
+200x60 trial=2 glyphs=ascii: 3000 frames, 200x60, 1.772 ms/frame, 564.4 FPS CPU-only, 15 rasterized triangles (last frame), checksum f9c8844b74a4ff6f
+200x60 trial=2 glyphs=hybrid: 3000 frames, 200x60, 1.875 ms/frame, 533.3 FPS CPU-only, 15 rasterized triangles (last frame), checksum 773b269fa2dabc80
+200x60 trial=3 glyphs=ascii: 3000 frames, 200x60, 1.773 ms/frame, 564.0 FPS CPU-only, 15 rasterized triangles (last frame), checksum f9c8844b74a4ff6f
+200x60 trial=3 glyphs=hybrid: 3000 frames, 200x60, 1.875 ms/frame, 533.2 FPS CPU-only, 15 rasterized triangles (last frame), checksum 773b269fa2dabc80
