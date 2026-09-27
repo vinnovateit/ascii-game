@@ -1,0 +1,40 @@
+. `  '   `,`,,,.,', `' ,`.'.''              ,   `.` .  ,.      `  ``       ` '  .  `      ,  . `   `    '  '   ``,   .  
+, `,',`''..., '  . .,```  .' '.``,`       .    ,     ' ''    '     ,    ` '           , ,      `    '.  .         ,  , `
+'`. .'  ,, . '`,,, ',,.`' ,',,`''.`' `'. `               .,,,                 '     ,    .      '      ` . . '  ,  //===
+.'' ,,'. ''.,..` .. '., .',`.' ,, ',,,'  ,,  .    .  . .    ,   ,  .      .   '    .      ' '.  ,        //========~+-=:
+'`  . .'.`  ,,  `,`   , ..,  `, ..''   ,'. ..`'.      `,  `             .'    .'``'` .    '   //=========-==+~:-:+-=;=-;
+ '' `.,'. ..``,  ...     `, ` . .,...'' `.  . ,' ,,..     ,,                     `  //========:+=+:==-::::~:+~~=~:+~=~++
+.,.``,`  `.''.  . ,`..,  ``.`'' ` .     ., `'.` , . ` `` '., . `'   '    .//========~~-=:X::-:-;:~:=:+~=~:;=-;;--+::;~:+
+..`'',`.. `..,,.,.. , ,   ,  ., .,'`  . `. ` ,' `,``  '..,'  `, //========+++==X+==X~;-===x==++;~=--~::;===~+::=::;-;;+;
+. ..,,' ., `.`, .'  .,'.' '  . ` ,.`', `  ..`'   `, ` ' . ,..``/-+~=+:x===+~*+==++=::+-+=:;~-:+=-:==;=-=;=+=~~+;-;+~=*~X
+.... ',.`, .,, , `,`,` .  ,,, ``' ' , ``   ` ` ,',',.,,,''` ```|:=*:~===+=:+;+==-=~~=x*=x=~:++=-+*X~+=x=*X=+~:xxxX+=====
+ , . '  .,` ` ``.` '.  , ',``  `   . . .,` . ,.'` , ,`.` `'' `'|=x~=*+:=+=-+:===~==~;=-~++++X~~X*==~+*===============~*~
+,.` ,' .  `.  .'`  .,,,,  ..',. `.''`  ,,..  .' .,.'  ...  ,. .|=~-+~~;~==*~+===+==x+===x==/==\=======-;=:++~~-=:;:;+Xx+
+ . `. ', '' .. ,``  ,``., , ,' `  ,` , `.  .''` . .''` `.'    ,|:=x=+=:=X~=+;~=~;:=+-;:+===|`  |-:-~-::~:-;:-;;=:::*==~~
+ ',' ..`''``,. . ' , `,..' `   ''    ,..`` `,` .,'' ` .   ``   |*=~-===~~:x+;+=:+-=XX:=+;x=|, /-=+=:+;=:;-+==;+~==-===+=
+ ,`'.`,,,`' `'  ,,'.., ''.`.' ``'  ````. . .` '.'` . ` `.`  , '|+~++~:~+~+~=:++=+*+=X=+;+=~|` /--++=:=:~::-+~=++:-==;x~~
+,.` , ,,`.   '.`..'`, ,. `, .,,.., ',``'`.,'..'`',` ''``  '` . |+:*=:=+:;~+++~~=:=X+===X~=+|`'|::+:::~==-:=+:==:+=:=~=~~
+ `'  ' .. '' ` ..,`'.,` '``.''  ``'. .' ` .  .,=,'.`..  . ,., '+::~=X===-=+=++~=+x=~=*+~:+|'==;===~==~~==+::;:-:-+++++x=
+  ' . ,.`,'`.  .` .,'`    '.'` ,. , ..'' ,''. ;.=====================   \M,=*=+=~~~+=++;++|./#-:;=~-:-~:+:+-::-+:-:===*:
+`. ., ... . .  .   `.` `'..' '`,. '''.' ',.`.`\-*X~+~-==-~:x+=*x|,..,`.  \+==x+=~===:+=x=|':;=-;-~;======~~~-:-~:+|M#@~=
+,  . ,.,,  , .`  ',  ``,.' `. '.,`.`. `'.` `  ,|::..:'-,:`;-::;/  `       \~=~~~:+=:xx+~x|.::;=:~:|W##@|:-=====;;+;===:=
+. `'.. ' ' '''`. . ,'.```,`,  ' '`'.  `,., `. '|,:;:`.-.'::::-;:|     ,  .|+==~;=x==:++x+*+-======;:++::://#%&#\\=~-==~~
+ ,.'  . .. `  '` ,`,`` '`, .`...'.,.....`'..''`::.;:::-;-.;-.:::|   .     |XX**X*=~+~~-=~x,/%X*xxX=======X%XX#*Xx=======
+ ... ', . `  ,.`  .,``, ``''. .   ,`.`,.`,`  =='-----:;:.::;,::;|    , ,  /XxXXXxx**xXxxxX=X*x*x=xXX#X*#x%X%Xx*Xx*&*X##%
+.``', ` .,. ',`'   ,  `''   ' `  , .`========XX|:,;::::::-;;:::-|   ` .   |xXxXxxxx*xX*x**x*Xxx*XxXXxx**Xxxxxxx**xxxxxxx
+ `',. '.'., . `'. ` `` `. .`=========X**=*x*=*|:-::,`---':.:,;;.|    ,'=\|xxX*xx****x*xXx**x*xxXX*XxxxxXxx*X~xXxxxxxxXxx
+.'.''.'`. .` .   .,.========*xxxx*XXxxxxxX*X*x|-:::';==;;-;---:;|  '=\|W`/x*xXxxxXxxXxXXx***xx*xXxxxXx*xx*xxxXXx*XxXXx**
+' , , . ,.,=========XxXx***x**Xxxx*xx*xxxxXxXxX====x==@\`-:;==.| =\|W /  /X*Xxxx**x*Xxx*xxxx*xxx*xXxXXxxxxx*xxXxxXxxXXX*
+.' ========xxxx*xxxx*x%x#x*xXxX*XXxX&*X*xx*x*XxxX\-,``:X=-~=|@\, #`/ ./==*x*&*XxxxxxXxXxXxx*xx*xxXx*XxxX*xXXxXxXx*xx#x*X
+===*xXxXxxXx*x*xxxxxxxx**xXxXxXxXxxxXxxxxxx*xXxXxx=====x\:,;,~+|` ./==**xxXXXXxxxx*XxxxxXxxxxx*x*xXX*Xxxxx*xxxxxxX*XxxxX
+xxxxx**x*X&*xxx*x*x*#*x*XxXXxXxxxX#XXx*x%*xxxXx*XXxx*xxx&====x&\===X&*xXxX**xx#Xxxxx**Xx*xX*xxX*xX%*x*Xx*x*xXxxX*xxXxX*x
+***x**xxX***x*X*X*Xxx*x%Xx*xx*XxxXX*XxXXx*x*xxX#*XxXX*xxX%xX*#*Xx***Xx*X**XxXx*XXXXxXx*x*xxxx*XX*xXX*xx&***xXxX*x%*xXXxx
+#xX*xxXxx*xxxxxX#x*xxXxxX#XxXxx**xxx%*xXxxxx*x&X**x*%X*Xx**x***XXx***Xxx**XX#*Xx%*xxXX*x*XX*#x#X*xxxxx*x&Xxxxx*X*xx*x**x
+*x*x*xXxxxX*XXxxXX*XXxXx*xx*xXXxxx*xxX*xxxXxXXxxXxxXX#Xxx*x*x*X*XxxX*xxXxxX****x**Xx**xxx*xx*xx*xxxXxxxxx*Xx*X**xXXXXXxx
+*xXxx***#Xx*#Xx*XxXXxx*xxxxxxxXX**#xXx#*%*xxXxx***#x*x*xX*xX#xX***%**Xxxxx%xxxx*xx&xX*#Xx*xx**#XX**xxXxXxx*Xxxx*x***xxx*
+x*xxxxxx*xxx**x*XXXxx#xxX*xx**x*XX*x**xXxxxxxxxX*xxxXXxxXXxXxxxxXx*x***Xx*Xx*x*xXxxXx&x*xxXX*xxx*XXXXX**XxxX*XX***x*xXX*
+xxxXXxXXxxxXXx%*&xxXxXXxxXxXXX%*#xxxx*xxxXxxxXxxxX**x*xXXx*X#x**X*xx%X*X&xXX*xXXxxXX*x%XxX*XX*Xx*x#X*XxXxX*xxxX*XxxxxxxX
+*XX*X#xx**x*X*x**xX#XXxXxxxx*x*xx**xXxxXXx*x*x**Xxx*x**xx***xx**XxxXXX*X*xxxxxxxXXXX**X*xxx#XX*xXxXxxXXXxxxxx**xxX*XXxxx
+*X%xxxx*xx#xx*xxXxX**x*x&X%x**XXxxxxX*XXx***xxxx#*#XxX%*Xxx*Xx*x#**XXXxXx**XXXx*&Xx*XXXxxxX*xxXx*xXXXXXXXxxx#x*x*xXXXXx*
+xx*%xx*xX#xXxx*Xx*xxxXX**x*XXxx**%X%X*x*xxX%x*Xxxx*xxxX**xxxx#xxX%**xXxx*xxXx*x#xxxXxX*xx*Xxx*Xx*x*x*x*XX*Xx**xxX*x*xXX*
+x*#x**x*xxx#xxXxX*#xx*xXX**X%**xx%xX&xXx*xx*xx*X&x*X&X*x*xxxX***xxxx*xxxxx%xXx*x#*xX#xxX*x&xxX*xx#xX*xx*x#XX**x*#x#x&*xx
