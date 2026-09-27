@@ -60,8 +60,18 @@ impl Options {
         while let Some(arg) = args.next() {
             if arg == "--help" {
                 println!(
-                    "ASCII 3D renderer\nWASD move; arrows look; mouse drag/move look; Q/Esc exit; 1-5 debug; T telemetry\n--snapshot  --benchmark FRAMES  --width N  --height N  --view room|stairs|landing\n--fov DEGREES  --cell-aspect RATIO  --contrast N  --gamma N  --levels N\n--dither N  --ramp ' .:#@'  --telemetry  --mode 1..5"
+                    "ASCII 3D renderer
+WASD move; arrows/mouse look; Q/Esc exit; 1-5 debug; T telemetry
+V visual tuning; ,/. select; -/= fine; _/+ coarse; R reset; P preset
+--preset pixatool|neutral  --camera-preset doorway|crates|stairs
+--capture-frame DIRECTORY (writes raw luminance, depth, edges, density and ASCII)
+--snapshot  --benchmark FRAMES  --width N  --height N
+--fov DEGREES  --cell-aspect RATIO  --ramp ' .:#@'  --telemetry  --mode 1..5
+Visual parameters:"
                 );
+                for p in PARAMETERS {
+                    println!("  --{} {}..{}", p.name, p.min, p.max);
+                }
                 return Ok(None);
             }
             match arg.as_str() {
@@ -199,8 +209,8 @@ pub fn run(mut options: Options) -> io::Result<()> {
             std::fs::write(
                 path.join("style.txt"),
                 format!(
-                    "preset={}\ncell_aspect={}\n{:#?}\n",
-                    options.preset, options.cell_ratio, options.ascii.style
+                    "preset={}\ncell_aspect={}\nbands={:?}\n{:#?}\n",
+                    options.preset, options.cell_ratio, options.ascii.bands, options.ascii.style
                 ),
             )?;
         }
