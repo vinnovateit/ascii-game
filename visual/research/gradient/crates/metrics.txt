@@ -1,0 +1,17 @@
+method=gradient
+view=crates
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=11.85700
+convert_ms=26.65565
+cpu_ms=38.51265
+occupancy=1.000000
+entropy=2.650834
+atlas_density=0.171948
+mse=0.137184
+mae=0.271756
+gradient_mae=0.265152
+glyph_change_rate=0.000000

@@ -1,0 +1,17 @@
+method=mse
+view=crates
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=11.30058
+convert_ms=16.06410
+cpu_ms=27.36468
+occupancy=0.000000
+entropy=-0.000000
+atlas_density=0.000000
+mse=0.032577
+mae=0.166942
+gradient_mae=0.001278
+glyph_change_rate=0.000000

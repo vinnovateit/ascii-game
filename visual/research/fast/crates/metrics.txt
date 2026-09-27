@@ -1,0 +1,17 @@
+method=fast
+view=crates
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=0.24800
+convert_ms=0.55345
+cpu_ms=0.80144
+occupancy=0.837917
+entropy=3.691512
+atlas_density=0.114326
+mse=0.097918
+mae=0.232434
+gradient_mae=0.173490
+glyph_change_rate=0.000000

@@ -1,0 +1,17 @@
+method=gradient
+view=stairs
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=13.30759
+convert_ms=27.12356
+cpu_ms=40.43115
+occupancy=1.000000
+entropy=2.831479
+atlas_density=0.172863
+mse=0.136906
+mae=0.277058
+gradient_mae=0.207434
+glyph_change_rate=0.000000

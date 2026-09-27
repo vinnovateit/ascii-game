@@ -1,0 +1,17 @@
+method=feature
+view=crates
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=12.23785
+convert_ms=10.96296
+cpu_ms=23.20081
+occupancy=1.000000
+entropy=2.528006
+atlas_density=0.172140
+mse=0.137857
+mae=0.272429
+gradient_mae=0.265726
+glyph_change_rate=0.000000

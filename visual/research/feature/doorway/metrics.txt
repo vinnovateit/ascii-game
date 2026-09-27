@@ -1,0 +1,17 @@
+method=feature
+view=doorway
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=11.64889
+convert_ms=11.14386
+cpu_ms=22.79276
+occupancy=1.000000
+entropy=2.613124
+atlas_density=0.164562
+mse=0.131694
+mae=0.260728
+gradient_mae=0.261714
+glyph_change_rate=0.000000

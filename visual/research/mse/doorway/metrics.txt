@@ -1,0 +1,17 @@
+method=mse
+view=doorway
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=10.69786
+convert_ms=16.68737
+cpu_ms=27.38522
+occupancy=0.000000
+entropy=-0.000000
+atlas_density=0.000000
+mse=0.030933
+mae=0.159830
+gradient_mae=0.000964
+glyph_change_rate=0.000000

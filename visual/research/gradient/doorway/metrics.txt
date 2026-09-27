@@ -1,0 +1,17 @@
+method=gradient
+view=doorway
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=11.35770
+convert_ms=26.56130
+cpu_ms=37.91899
+occupancy=1.000000
+entropy=2.701916
+atlas_density=0.164392
+mse=0.131218
+mae=0.260250
+gradient_mae=0.260925
+glyph_change_rate=0.000000

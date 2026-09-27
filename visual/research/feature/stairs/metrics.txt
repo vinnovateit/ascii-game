@@ -1,0 +1,17 @@
+method=feature
+view=stairs
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=13.52125
+convert_ms=10.90176
+cpu_ms=24.42301
+occupancy=1.000000
+entropy=2.836790
+atlas_density=0.170743
+mse=0.136541
+mae=0.276696
+gradient_mae=0.208481
+glyph_change_rate=0.000000

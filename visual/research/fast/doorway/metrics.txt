@@ -1,0 +1,17 @@
+method=fast
+view=doorway
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=0.23636
+convert_ms=0.53812
+cpu_ms=0.77449
+occupancy=0.746875
+entropy=3.491663
+atlas_density=0.106715
+mse=0.091433
+mae=0.220423
+gradient_mae=0.160425
+glyph_change_rate=0.000000

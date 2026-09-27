@@ -1,0 +1,17 @@
+method=normalized
+view=crates
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=12.46512
+convert_ms=18.65866
+cpu_ms=31.12378
+occupancy=1.000000
+entropy=2.604646
+atlas_density=0.172015
+mse=0.137249
+mae=0.271821
+gradient_mae=0.265102
+glyph_change_rate=0.000000

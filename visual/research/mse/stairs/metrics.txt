@@ -1,0 +1,17 @@
+method=mse
+view=stairs
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=13.28299
+convert_ms=16.68041
+cpu_ms=29.96339
+occupancy=0.000000
+entropy=-0.000000
+atlas_density=0.000000
+mse=0.037472
+mae=0.177534
+gradient_mae=0.001649
+glyph_change_rate=0.000000

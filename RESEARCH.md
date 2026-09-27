@@ -39,3 +39,32 @@ not a direct similarity score against this geometrically different reference.
 
 Baseline source preview: `visual/research/baseline/source.png` (enlarged luminance).
 No rendering changes at this checkpoint. No dependency or toolchain changes planned.
+
+## C/D — Initial matcher failures
+
+Implemented isolated research runner with MSE, normalized correlation plus density,
+gradient correlation, compact features, foreground scale and scale-plus-offset.
+All use the same supersampled image (6×10 samples/cell) and measured atlas coverage.
+Source tone is `(raw-.08)/.72`, clamped, scaled to the atlas maximum mean coverage.
+This puts the image into the density range a default-foreground glyph can express.
+
+`visual/research/comparisons/initial.png` shows fast / normalized / gradient. Results:
+
+- Fixed-intensity binary MSE chose spaces everywhere. With target pixels below .5,
+  adding a white glyph pixel increases squared error. This is a real objective
+  mismatch, not evidence that an empty image is visually best.
+- Normalized/gradient/feature methods preserve scene forms but produce repeated
+  punctuation/brackets/ampersands across flat planes. They are worse than fast.
+  Gradient correlation only helps at the relatively few boundary patches.
+- Optimal foreground scale alone overwhelmingly chooses the densest `@` shape,
+  modulating its intensity. Structure is not recovered from flat input.
+- Adding an offset nearly reproduces the flat grayscale image (doorway MSE .000154),
+  but requires background fills. Its low error is misleading for a theme-native
+  terminal renderer; this option is analysis-only and rejected for presentation.
+- Full gradient matching at 120×40 costs ~38 ms including ~11 ms source rasterization;
+  it is already too costly for 60 FPS. Reduced sampling and shortlisting need testing.
+
+Captures, actual-font previews, per-glyph counts and atlas reconstruction errors are
+stored for all seven variants and all three cameras. Pixel error penalizes the useful
+high-frequency ink of real glyphs; it cannot rank art direction by itself. The initial
+source supplies no interior structure for shape matching. Next isolate source detail.

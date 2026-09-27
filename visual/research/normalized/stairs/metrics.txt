@@ -1,0 +1,17 @@
+method=normalized
+view=stairs
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=16.93389
+convert_ms=24.05574
+cpu_ms=40.98962
+occupancy=1.000000
+entropy=2.713358
+atlas_density=0.172200
+mse=0.136690
+mae=0.276845
+gradient_mae=0.207427
+glyph_change_rate=0.000000

@@ -1,0 +1,17 @@
+method=fast
+view=stairs
+width=120
+height=40
+sampling=6x10
+frames=10
+motion=static
+render_ms=0.25756
+convert_ms=0.60620
+cpu_ms=0.86375
+occupancy=0.851042
+entropy=3.719368
+atlas_density=0.119433
+mse=0.102372
+mae=0.242432
+gradient_mae=0.156726
+glyph_change_rate=0.000000
